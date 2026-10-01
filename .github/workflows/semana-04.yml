@@ -19,7 +19,7 @@ jobs:
       - uses: actions/cache@v4   # los 77 MB de la EES 2022, para no pedirlos al INE en cada push
         with:
           path: semana-04/datos/datos_2022.zip
-          key: ees-2022
+          key: ees-2022-c52b716c   # la suma SHA-256 del zip, que el test comprueba
       - run: julia --project=semana-04 -e 'using Pkg; Pkg.instantiate()'
       - run: julia --project=semana-04 --depwarn=yes semana-04/test_semana4.jl
       - uses: actions/upload-artifact@v4

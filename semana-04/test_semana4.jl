@@ -2,13 +2,16 @@
 # fase I, limpiar.sh y proyecto.jl, en esta carpeta, con el historial de Git:
 #   julia --project=semana-04 -e 'using Pkg; Pkg.instantiate()'
 #   julia --project=semana-04 --depwarn=yes semana-04/test_semana4.jl
-using Test, Logging, LinearAlgebra
+using Test, Logging, LinearAlgebra, SHA
 
 const script = joinpath(@__DIR__, "laboratorio_semana4.jl")
 const proyecto = joinpath(@__DIR__, "proyecto.jl")
 const resultados = joinpath(@__DIR__, "resultados")
 const zip_ees = joinpath(@__DIR__, "datos", "datos_2022.zip")
 const csv_ees = joinpath(@__DIR__, "datos", "ees2022.csv")
+# La versión de la EES 2022 con la que se escribió la semana: si el INE revisa el archivo,
+# el recuento deja de cuadrar, y esta suma lo dice antes.
+const sha256_ees = "c52b716c156dbbe1a64026140cf8e303db4bde414437f4d1737f56fcaf609e10"
 const entrega = Module(:Entrega)
 const cierre = Module(:Cierre)
 
@@ -50,7 +53,9 @@ end
     @testset "test_ortogonalidad" begin
         (; X, y, residuos) = entrega
         @test residuos ≈ y - X * (X \ y)   # los residuos son los de la proyección de y sobre col(X)
-        @test norm(X' * residuos, Inf) < 1e-10
+        # Relativo a lo que el redondeo permite: X \ y queda en 1-8, la ecuación normal en
+        # 9-17 e inv(X' * X), por encima de 50.
+        @test norm(X' * residuos, Inf) < 30 * eps() * opnorm(X) * norm(residuos)
     end
 
     @testset "test_descomposicion_varianza" begin
@@ -61,6 +66,7 @@ end
     @testset "proyecto: limpiar.sh deja la muestra de la EES" begin
         rm(csv_ees; force = true)
         @test success(Cmd(`sh limpiar.sh`; dir = @__DIR__))
+        @test bytes2hex(open(sha256, zip_ees)) == sha256_ees
         lineas = readlines(csv_ees)
         @test lineas[1] == "mujer,estudios,antiguedad,salario"
         esperadas = filas_esperadas()
