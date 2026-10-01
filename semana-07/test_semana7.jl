@@ -21,16 +21,16 @@ function newton_referencia(X, y)
     return β
 end
 
-# El dado de Brandeis de Jaynes, resuelto por bisección sobre λ en pₖ ∝ exp(λ k).
+# El dado de Brandeis de Jaynes, resuelto por bisección sobre λ en pₖ ∝ exp(λ k), con el
+# máximo restado antes de exponenciar.
 function entropia_referencia(valores, μ)
-    media(λ) = (w = exp.(λ .* valores); sum(w .* valores) / sum(w))
+    pesos(λ) = (z = λ .* valores; w = exp.(z .- maximum(z)); w ./ sum(w))
     a, b = -50.0, 50.0
     for _ in 1:200
         m = (a + b) / 2
-        media(m) < μ ? (a = m) : (b = m)
+        sum(pesos(m) .* valores) < μ ? (a = m) : (b = m)
     end
-    w = exp.(((a + b) / 2) .* valores)
-    return w ./ sum(w)
+    return pesos((a + b) / 2)
 end
 
 @testset "Semana 7" begin
@@ -75,5 +75,8 @@ end
         q = entrega.max_entropia(1:10, 3.0)              # otro problema: no vale un vector fijo
         @test sum(q) ≈ 1 && sum(q .* (1:10)) ≈ 3.0
         @test q ≈ entropia_referencia(1:10, 3.0) atol = 1e-8
+        r = entrega.max_entropia(1:1000, 999.5)          # e^{λv} desborda sin restar el máximo
+        @test sum(r) ≈ 1 && sum(r .* (1:1000)) ≈ 999.5
+        @test r ≈ entropia_referencia(1:1000, 999.5) atol = 1e-8
     end
 end

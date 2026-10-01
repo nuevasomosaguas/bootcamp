@@ -34,7 +34,7 @@ En la semana 4 el estimador tenía fórmula cerrada: la proyección de $\mathbf{
    H = -X^T W X
    $$
 
-   con $\mathbf{p} = \sigma(X\boldsymbol\beta)$ y $W = \text{diag}\big(p_i(1 - p_i)\big)$. Como $W$ tiene la diagonal positiva, $H$ es definida negativa si $X$ tiene rango completo: $\ell$ es cóncava y el estimador de máxima verosimilitud es único.
+   con $\mathbf{p} = \sigma(X\boldsymbol\beta)$ y $W = \text{diag}\big(p_i(1 - p_i)\big)$. Como $W$ tiene la diagonal positiva, $H$ es definida negativa si $X$ tiene rango completo: $\ell$ es cóncava y el estimador de máxima verosimilitud, si existe, es único. Puede no existir: con **separación** completa o casi completa, cuando una combinación de regresores predice sin error el resultado en una parte de la muestra, $\ell$ sigue creciendo hacia 0 sin alcanzar un máximo y los coeficientes divergen.
 
 3. **Dos maneras de subir.** El **ascenso de gradiente** da pasos fijos en la dirección de máxima subida, $\boldsymbol\beta \leftarrow \boldsymbol\beta + \alpha \nabla\ell$. Solo converge si $\alpha < 2/|\lambda_{\text{máx}}(H)|$, y entonces avanza al ritmo que marca la dirección menos curvada: cuanto mayor es $\kappa(H) = \lambda_{\text{máx}}/\lambda_{\text{mín}}$, más despacio. El **método de Newton** maximiza en cada paso el modelo de Taylor de segundo orden:
 
@@ -42,7 +42,7 @@ En la semana 4 el estimador tenía fórmula cerrada: la proyección de $\mathbf{
    \boldsymbol\beta \leftarrow \boldsymbol\beta - H^{-1} \nabla\ell = \boldsymbol\beta + (X^T W X)^{-1} X^T (\mathbf{y} - \mathbf{p})
    $$
 
-   Cada paso es unos mínimos cuadrados ponderados por $W$ —la semana 4 con pesos—, se resuelve como sistema lineal, sin invertir, y cerca del máximo el error se eleva al cuadrado en cada iteración: la convergencia es cuadrática. Además, $-H^{-1}$ en el máximo estima la matriz de varianzas de $\hat{\boldsymbol\beta}$.
+   Cada paso es unos mínimos cuadrados ponderados por $W$ —la semana 4 con pesos—, se resuelve como sistema lineal, sin invertir, y cerca del máximo el número de cifras correctas se duplica en cada iteración: la convergencia es cuadrática, $\|\nabla\ell_{k+1}\| \approx C\,\|\nabla\ell_k\|^2$ con una constante $C$ que depende del problema. Además, $-H^{-1}$ en el máximo estima la matriz de varianzas de $\hat{\boldsymbol\beta}$.
 
 4. **Los multiplicadores de Lagrange.** Para maximizar $f(\mathbf{x})$ sujeta a $g_j(\mathbf{x}) = c_j$, en el óptimo el gradiente de $f$ es una combinación de los gradientes de las restricciones, $\nabla f = \sum_j \lambda_j \nabla g_j$. El ejemplo que cierra esta semana viene de Jaynes: de todas las distribuciones $\mathbf{p}$ sobre los valores $v_1, \dots, v_K$ con una media dada $\mu$, ¿cuál supone menos de lo que no se sabe? La de **máxima entropía**:
 
@@ -115,22 +115,26 @@ Con $\alpha = 10^{-5}$, 20 000 iteraciones dejan $\|\nabla\ell\| \approx 0.77$, 
 ### Ejercicio 1: el método de Newton
 
 - **Tarea:** escribe `newton_logistica(X, y)`, que parte de $\boldsymbol\beta = \mathbf{0}$, aplica el paso de Newton resolviendo el sistema con `\` y se detiene cuando $\|\nabla\ell\| < 10^{-8}$. Devuelve `β, normas`, con la norma del gradiente en cada iteración. Añádela a la figura. Calcula los errores típicos, $\sqrt{\text{diag}(-H^{-1})}$ en $\hat{\boldsymbol\beta}$, y comprueba si los coeficientes verdaderos están a menos de dos errores típicos.
-- **Pregunta causal:** Newton converge en cinco iteraciones. Escribe la sucesión de normas y comprueba que cada una es del orden del cuadrado de la anterior. ¿Por qué el paso de Newton no depende de un $\alpha$ elegido a mano?
+- **Pregunta causal:** Newton converge en cinco iteraciones. Escribe la sucesión de normas y calcula el cociente $\|\nabla\ell_{k+1}\| / \|\nabla\ell_k\|^2$: ¿se estabiliza? ¿Cuántas cifras gana cada paso? ¿Por qué el paso de Newton no depende de un $\alpha$ elegido a mano?
+- **En la pizarra:** cambia $\mathbf{y}$ por `estudios .> 13`, una separación completa, y aplica tu Newton con un máximo de iteraciones. ¿Se detiene? ¿Qué hacen los coeficientes, $\ell$ y la norma del gradiente, y por qué cumplir el criterio de parada no prueba aquí que se haya llegado a un máximo?
 
 ### Ejercicio 2: el paso del gradiente y el condicionamiento
 
-- **Tarea:** calcula los autovalores de la hessiana en $\hat{\boldsymbol\beta}$ y el umbral $2/|\lambda_{\text{máx}}|$. Ejecuta el ascenso con $\alpha = 2 \cdot 10^{-5}$ y $3 \cdot 10^{-5}$, y explica lo que pasa con el umbral. Después centra los años de estudio, `estudios .- mean(estudios)`, y repite: ¿cuánto bajan $\kappa(H)$ y el número de iteraciones?
+- **Tarea:** calcula los autovalores de la hessiana en $\hat{\boldsymbol\beta}$ y el umbral $2/|\lambda_{\text{máx}}|$. La hessiana es una suma sobre las 2000 observaciones, y $\lambda_{\text{máx}}$ crece con $n$: por eso $\alpha$ es tan pequeño, y no tiene un valor universal. Con la log-verosimilitud media, $\ell/n$, ¿qué paso hace falta? Ejecuta el ascenso con $\alpha = 2 \cdot 10^{-5}$ y $3 \cdot 10^{-5}$, y explica lo que pasa con el umbral. Después centra los años de estudio, `estudios .- mean(estudios)`, y repite: ¿cuánto bajan $\kappa(H)$ y el número de iteraciones?
 - **Pregunta causal:** ¿por qué el ritmo del ascenso lo marca el autovalor más pequeño, y el paso máximo el más grande? Relaciónalo con el número de condición de la semana 3.
 
 ### Ejercicio 3: Lagrange y la máxima entropía
 
-- **Tarea:** deduce en la pizarra, con los multiplicadores de Lagrange, que la distribución de máxima entropía con media $\mu$ es $p_k \propto e^{\lambda v_k}$. Escribe después `max_entropia(valores, μ)`, que halla $\lambda$ por el método de Newton sobre la ecuación $m(\lambda) = \mu$, donde $m(\lambda) = \sum_k v_k p_k(\lambda)$, y devuelve $\mathbf{p}$. Demuestra antes que $m'(\lambda)$ es la varianza de $v$ bajo $\mathbf{p}(\lambda)$.
+- **Tarea:** deduce en la pizarra, con los multiplicadores de Lagrange, que la distribución de máxima entropía con media $\mu$ es $p_k \propto e^{\lambda v_k}$. Escribe después `max_entropia(valores, μ)`, que halla $\lambda$ por el método de Newton sobre la ecuación $m(\lambda) = \mu$, donde $m(\lambda) = \sum_k v_k p_k(\lambda)$, y devuelve $\mathbf{p}$. Demuestra antes que $m'(\lambda)$ es la varianza de $v$ bajo $\mathbf{p}(\lambda)$. Calcula los pesos restando antes el máximo de $\lambda v_k$, como el `softplus` del código base o la log-verosimilitud de la semana 6: con `valores = 1:1000` y $\mu = 999.5$, $e^{\lambda v_k}$ desborda y sin ese truco sale `NaN`.
+- **En la pizarra:** ¿qué pasa si $\mu$ cae fuera de $[v_{\min}, v_{\max}]$? ¿Y si coincide con un extremo, $\mu = 6$ en el dado? ¿Cuánto vale entonces $\lambda$, y por qué tu Newton puede creer que ha terminado? Desde $\lambda = 0$, el Newton puro converge en todos los problemas de este ejercicio, pero no está garantizado en general: Boyd y Vandenberghe (cap. 9) explican la búsqueda lineal hacia atrás que lo protege.
 - **El dado de Jaynes:** un dado cuya media, tras muchas tiradas, es 4.5 en lugar de 3.5. ¿Qué probabilidad asigna la máxima entropía a cada cara? Debe salir $\mathbf{p} \approx (0.054, 0.079, 0.114, 0.165, 0.240, 0.348)$.
 - **Pregunta causal:** con $\mu = 3.5$, ¿qué distribución sale, y por qué? ¿En qué sentido es la de máxima entropía la que menos supone?
 
 ### Ejercicio 4: el contrato indefinido en la EES (sin entrega)
 
 Con los microdatos de la Encuesta de Estructura Salarial de la semana 4, `TIPOCON` (posición 29) vale 1 si el contrato es indefinido y 2 si es temporal. Estima con tu `newton_logistica` la probabilidad de un contrato indefinido según el sexo, los estudios y la antigüedad, e interpreta $e^{\hat\beta_j}$ como un cociente de *odds*. Es materia para la pizarra, no para la integración continua.
+
+- **En la pizarra:** casi nueve de cada diez asalariados tienen contrato indefinido. Con un resultado tan frecuente, ¿cuánto se separa el cociente de *odds* de mujeres frente a hombres del cociente de probabilidades? Calcula también el efecto marginal medio del sexo, la media de $\hat p_i(\text{mujer} = 1) - \hat p_i(\text{mujer} = 0)$. Carina Mood («Logistic Regression: Why We Cannot Do What We Think We Can Do», *European Sociological Review*, 2010) mostró que los coeficientes de la logística, a diferencia de los de la regresión lineal de la semana 4, no se pueden comparar entre modelos o grupos, porque dependen de la heterogeneidad no observada: ¿qué le pasa a $\hat\beta_{\text{mujer}}$ al añadir la antigüedad, y qué le pasa al efecto marginal medio?
 
 ## 4. Criterio de verificación por integración continua
 
@@ -139,7 +143,7 @@ La entrega es `semana-07/laboratorio_semana7.jl` en el repositorio de la asignat
 1. Se ejecuta sin excepciones ni advertencias en Julia 1.11 o posterior y deja la figura en `semana-07/resultados/`.
 2. Supera `test_gradiente` y `test_hessiana`: `gradiente` coincide con las diferencias finitas de `logverosimilitud` y con $X^T(\mathbf{y} - \mathbf{p})$, y `hessiana` es $-X^TWX$, simétrica y definida negativa.
 3. Supera `test_newton`: `newton_logistica` alcanza $\|\nabla\ell\| < 10^{-8}$ en diez iteraciones o menos y coincide con un Newton de referencia escrito aparte.
-4. Supera `test_max_entropia`: `max_entropia` resuelve el dado de Jaynes y otro problema que el test elige, con las restricciones exactas y la solución de referencia a $10^{-8}$.
+4. Supera `test_max_entropia`: `max_entropia` resuelve el dado de Jaynes, otro problema que el test elige y el de `valores = 1:1000` y $\mu = 999.5$, que desborda sin restar el máximo, con las restricciones exactas y la solución de referencia a $10^{-8}$.
 
 Los tests leen `X`, `y`, `logverosimilitud`, `gradiente`, `hessiana`, `newton_logistica` y `max_entropia`: el script conserva esos nombres. Antes de enviarlo, el mismo test se pasa en la terminal:
 
