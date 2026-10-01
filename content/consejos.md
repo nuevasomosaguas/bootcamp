@@ -45,7 +45,7 @@ Además de los textos de referencia de cada semana.
 ### Leer y escribir matemáticas
 
 - **Herbert Gintis, *Mathematics for Humanists*.** Un libro para quien llega a las matemáticas desde las humanidades: las trata como un lenguaje que permite decir con precisión lo que la prosa no puede. Recorre la lectura de textos matemáticos, la lógica, los conjuntos, los números, la probabilidad, el cálculo, los espacios vectoriales y el análisis real. Es un borrador de 2021, en abierto, que quedó sin terminar al morir Gintis en 2023: [en la web de la UMass](https://www.umass.edu/preferen/gintis/mathlit.pdf) y, si el enlace falla, [en el Internet Archive](http://web.archive.org/web/20241116135949/http://www.umass.edu/preferen/gintis/mathlit.pdf). Los capítulos 1 a 3 antes de la semana 1; el 8, con las semanas 1 a 4; el 6 y el 7, con las semanas 5 y 6.
-- **Richard Hammack, [*Book of Proof*](https://richardhammack.github.io/BookOfProof/).** Cómo se escribe una demostración, con ejercicios resueltos. Libre y gratuito.
+- **Richard Hammack, [*Book of Proof*](https://richardhammack.github.io/BookOfProof/).** Cómo se escribe una demostración, con ejercicios resueltos. Libre y gratuito. Si no te salen las demostraciones del bloque G de la [prueba de nivel](../diagnostico/), los capítulos 1, 2, 4 y 10 antes de la semana 1.
 - **Daniel J. Velleman, *How to Prove It: A Structured Approach*** (Cambridge University Press). La estructura lógica de las demostraciones, paso a paso.
 - **George Pólya, *How to Solve It*** (Princeton University Press). El método para atacar un problema que no se sabe resolver: entenderlo, buscar uno parecido, plantear un plan y revisarlo.
 
