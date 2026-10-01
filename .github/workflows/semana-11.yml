@@ -1,0 +1,29 @@
+# Corrige la entrega de la semana 11 con cada push o pull request que cambie el script.
+name: Semana 11
+on:
+  push:
+    paths: ["semana-11/laboratorio_semana11.jl"]
+  pull_request:
+    paths: ["semana-11/laboratorio_semana11.jl"]
+  workflow_dispatch:
+jobs:
+  corregir:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: julia-actions/setup-julia@v2
+        with:
+          version: "1"
+      - uses: julia-actions/cache@v2
+      - uses: actions/cache@v4   # los microdatos de defunciones de 2024, para no pedirlos al INE en cada push
+        with:
+          path: semana-09/datos/datos_2024.zip
+          key: defunciones-2024-33682a2f   # la suma SHA-256 del zip, que el test comprueba
+      - run: julia --project=semana-11 -e 'using Pkg; Pkg.instantiate()'
+      - run: julia --project=semana-11 --depwarn=yes semana-11/test_semana11.jl
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: resultados-semana-11
+          path: semana-11/resultados/
+          if-no-files-found: ignore
