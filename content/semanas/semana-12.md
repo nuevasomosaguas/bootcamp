@@ -26,10 +26,10 @@ Las diecinueve comunidades y ciudades autónomas se pueden replicar. Con el mét
 | :--- | :--- | :--- |
 | `poblacion_ccaa.csv` | [56940](https://www.ine.es/jaxiT3/Tabla.htm?t=56940) | Población por comunidad, sexo y edad simple a 1 de enero de 2024 y de 2025 |
 | `nacimientos_ccaa.csv` | [6509](https://www.ine.es/jaxiT3/Tabla.htm?t=6509) | Nacimientos de 2024 por comunidad de residencia de la madre, sexo y edad de la madre |
-| `tablas_mortalidad_ccaa.csv` | [27154](https://www.ine.es/jaxiT3/Tabla.htm?t=27154) | Las tablas de mortalidad de 2024 de cada comunidad, por grupos de edad |
+| `tablas_mortalidad_ccaa.csv` | [27154](https://www.ine.es/jaxiT3/Tabla.htm?t=27154) | Las tablas de mortalidad de 2024 de cada comunidad, abreviadas: 0, 1 a 4, 5 a 9 y así hasta el grupo abierto |
 | `provincias.csv` | | El código de cada provincia y el de su comunidad |
 
-Los microdatos de defunciones son los de la semana 9, en `semana-09/datos/datos_2024.zip`. Dos trampas nuevas: el INE escribe `""` en las celdas sin datos, como las edades sin nacimientos de las comunidades pequeñas, y en ellas hay edades sin defunciones, cuya $a_x$ se toma igual a $1/2$.
+Los microdatos de defunciones son los de la semana 9, en `semana-09/datos/datos_2024.zip`. Dos trampas nuevas: el INE escribe `""` en las celdas sin datos, como las edades sin nacimientos de las comunidades pequeñas, y en ellas hay edades sin defunciones, cuya $a_x$ se toma igual a $1/2$. Y la tabla 27154 es abreviada, pero de ella solo se compara la $e_0$: la tabla replicada es de edad simple, como en la semana 9.
 
 ## 2. Los entregables
 
@@ -76,13 +76,13 @@ typst compile informe.typ
 
 Sin pantalla y sin el informe delante. El tribunal pide una derivación y plantea objeciones directas.
 
-- **La derivación:** los autovectores de la matriz de Leslie. Con la subdiagonal, deduce $w_x = w_0\, \lambda^{-x} \prod_{y<x} s_y$; con la primera fila, la ecuación característica; con $\mathbf{v}^T A = \lambda \mathbf{v}^T$, columna a columna, el valor reproductivo por la izquierda, $v_{x+1} = \left(\lambda v_x - A_{1,x}\, v_0\right)/s_x$, desde $v_0 = 1$ hasta la última edad fértil. Explica por qué $\mathbf{w}$ es positivo y $\lambda_1$ es simple, con Perron-Frobenius.
-- **Objeciones posibles:** los microdatos no traen el día de nacimiento ni el de la muerte, ¿cómo puede coincidir tu $e_0$ con la del INE a la milésima? ¿Qué parte del resultado se debe a cada decisión de la semana 9? Tu migración residual mezcla la migración con el extranjero y la de otras comunidades: ¿cambia eso la interpretación de la proyección? ¿Qué supone la proyección con la migración de 2024 constante, y qué pasaría si fuera la mitad? Tu $r$ dice que la población cerrada se reduciría a la mitad en pocas décadas: si la de tu comunidad crece, ¿hay contradicción? ¿Por qué Leslie usa solo mujeres, y qué se pierde?
+- **La derivación:** los autovectores de la matriz de Leslie. Con la subdiagonal, deduce $w_x = w_0\, \lambda^{-x} \prod_{y<x} s_y$; con la primera fila, la ecuación característica; con $\mathbf{v}^T A = \lambda \mathbf{v}^T$, columna a columna, el valor reproductivo por la izquierda, $v_{x+1} = \left(\lambda v_x - A_{1,x}\, v_0\right)/s_x$, desde $v_0 = 1$ hasta la última edad fértil. ¿Por qué es mejor recorrerla hacia atrás, desde la última edad fértil, con $v_x = \left(A_{1,x}\, v_0 + s_x v_{x+1}\right)/\lambda$? Hacia delante, cada paso resta dos cantidades casi iguales: en todas las comunidades se pierden unas seis cifras, con un error relativo de $10^{-10}$ en la última edad fértil, y lo que debería ser 0 después de ella sale del orden de $10^{-14}$. Hacia atrás, solo se suman términos positivos. Explica por qué $\mathbf{w}$ es positivo y $\lambda_1$ es simple, con Perron-Frobenius.
+- **Objeciones posibles:** los microdatos no traen el día de nacimiento ni el de la muerte, ¿cómo puede coincidir tu $e_0$ con la del INE a la milésima? ¿Qué parte del resultado se debe a cada decisión de la semana 9? Tu migración residual mezcla la migración con el extranjero y la de otras comunidades: ¿cambia eso la interpretación de la proyección? ¿Qué supone la proyección con la migración de 2024 constante, y qué pasaría si fuera la mitad? Tu $r$ dice que la población cerrada se reduciría a la mitad en pocas décadas: si la de tu comunidad crece, ¿hay contradicción? ¿Por qué Leslie usa solo mujeres, y qué se pierde? Tu migración de 2024 es una cantidad fija por edad, y en muchas edades es negativa: si una comunidad perdiera más jóvenes de los que tiene, ¿qué daría la proyección? ¿Y $(I - A)^{-1}\mathbf{m}$ con una migración neta total negativa? ¿Por qué la emigración se modela mejor como una tasa sobre la población que como una cantidad?
 
 ## 4. Ampliación (sin entrega)
 
 - **Contra el INE.** El INE proyecta la población de España hasta 2074 con supuestos sobre la fecundidad, la mortalidad y la migración por edad que publica en su metodología. Construye la matriz de Leslie nacional con sus supuestos de fecundidad y de mortalidad y compara tu proyección con la suya: ¿dónde coinciden, dónde divergen, y qué supuesto explica cada diferencia?
-- **Las diecinueve.** Reúne las $r$ de todos tus compañeros: ¿qué relación tienen con el ISF y con la edad media a la maternidad de cada comunidad? ¿Qué parte de la variación entre comunidades se debe a la fecundidad y cuánta a la mortalidad? La elasticidad de la semana 11 da la respuesta.
+- **Las diecinueve.** Reúne las $r$ de todos tus compañeros: ¿qué relación tienen con el ISF y con la edad media a la maternidad de cada comunidad? ¿Qué parte de la variación entre comunidades se debe a la fecundidad y cuánta a la mortalidad? La elasticidad de la semana 11 da la idea, y el método tiene nombre: el análisis de respuesta de la tabla de vida (LTRE) de Caswell, en su *Matrix Population Models*, que reparte la diferencia de $\lambda$ entre dos matrices con las sensibilidades de una matriz intermedia.
 
 ## 5. Criterio de verificación por integración continua
 
@@ -96,7 +96,7 @@ Con cada push que cambie uno de los entregables, la integración continua ejecut
 6. `informe.typ` lee sus números con `toml()` y compila con Typst en una o dos páginas.
 7. `datos/defunciones.csv` está excluido por `.gitignore` y fuera del repositorio.
 
-Todo trabajo cuya compilación falle en limpio en el entorno de pruebas recibe, como dice el programa, calificación nula. El mismo test se pasa antes en la terminal, dentro del repositorio:
+Todo trabajo cuya compilación falle en limpio en el entorno de pruebas recibe, como dice el programa, calificación nula. Un fallo del servidor del INE no es del trabajo: la integración continua descarga los microdatos en un paso propio, antes del test y con reintentos, y si es ese paso el que falla, la ejecución se repite y no se califica. El mismo test se pasa antes en la terminal, dentro del repositorio:
 
 ```sh
 julia --project=semana-12 -e 'using Pkg; Pkg.instantiate()'
