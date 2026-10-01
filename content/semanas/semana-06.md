@@ -17,9 +17,9 @@ weight: 6
 
 ## 1. Marco conceptual: la probabilidad como extensión de la lógica en condiciones de incertidumbre
 
-La estadística frecuentista tradicional impone una ficción paralizante: trata los parámetros sociales desconocidos (la tasa real de apoyo a una medida, la heredabilidad de un rasgo o la efectividad de una política) como «constantes fijas desconocidas», y define la probabilidad como el límite de las frecuencias relativas en repeticiones infinitas de un experimento que jamás ocurrirá.
+La estadística frecuentista trata los parámetros sociales desconocidos (la tasa real de apoyo a una medida, la heredabilidad de un rasgo o la efectividad de una política) como constantes fijas, y define la probabilidad como la frecuencia relativa a lo largo de repeticiones del mismo procedimiento. Es el razonamiento de Gauss-Markov y de la simulación con $\mathbf{X}$ fija de la semana 4, y es correcto en su terreno: dice cómo se comporta un método de estimación.
 
-La **inferencia bayesiana**, respaldada por el teorema de Cox y formalizada por Jaynes, trata la probabilidad como una **medida cuantitativa del grado de creencia racional** dada la información disponible.
+La **inferencia bayesiana**, respaldada por el teorema de Cox y formalizada por Jaynes, responde a otra pregunta, qué creer del parámetro con estos datos, y trata la probabilidad como una **medida cuantitativa del grado de creencia racional** dada la información disponible.
 
 1. **El teorema de Bayes para parámetros continuos.** Sea $\theta \in [0, 1]$ el parámetro social de interés (por ejemplo, la proporción real de individuos de una población que alberga una preferencia latente) y $D$ los datos observados en una muestra de campo:
 
@@ -48,7 +48,7 @@ La **inferencia bayesiana**, respaldada por el teorema de Cox y formalizada por 
    \mathbb{E}[\theta \mid k] = \frac{\alpha + k}{\alpha + \beta + n}
    $$
 
-3. **Muestreo Monte Carlo e intervalos de credibilidad.** A diferencia del confuso *p*-valor frecuentista, la distribución a posteriori permite extraer, por simulación Monte Carlo, **intervalos de credibilidad del 95 %**: podemos afirmar directamente que la probabilidad de que el parámetro real $\theta$ esté en el intervalo $[a, b]$ es del 95 %. El código base calcula el intervalo central, entre los percentiles 2,5 y 97,5; el intervalo de máxima densidad (HDI) coincide con él cuando la posterior es simétrica.
+3. **Muestreo Monte Carlo e intervalos de credibilidad.** La distribución a posteriori permite extraer, por simulación Monte Carlo, **intervalos de credibilidad del 95 %**: dados el modelo y la *prior*, la probabilidad de que el parámetro real $\theta$ esté en el intervalo $[a, b]$ es del 95 %. Un intervalo de confianza del 95 % dice otra cosa: el procedimiento que lo construye acierta en el 95 % de las muestras. El ejercicio 4 compara los dos. El código base calcula el intervalo central, entre los percentiles 2,5 y 97,5; el intervalo de máxima densidad (HDI) coincide con él cuando la posterior es simétrica.
 
 ## 2. Código base de referencia (`laboratorio_semana6.jl`)
 
@@ -60,8 +60,9 @@ using Random, Statistics
 
 Random.seed!(42)
 
-# 1. Espacio del parámetro: una rejilla de paso 0.001 en [0, 1]
-p = 0:0.001:1
+# 1. Espacio del parámetro: los puntos medios de mil intervalos de [0, 1]. Sin los
+#    extremos: con k = 0, 0 * log(0) daría NaN, y un solo NaN contamina la posterior entera
+p = 0.0005:0.001:0.9995
 
 # 2. Prior informada Beta(α, β), normalizada sobre la rejilla
 α, β = 3, 6
@@ -102,7 +103,7 @@ text!(ax1, 0.405, 9; text = "Posterior", align = (:left, :center))
 vlines!(ax1, [media]; color = :black)
 ax2 = Axis(fig[1, 2]; title = "Simulación Monte Carlo, 100 000 extracciones",
     xlabel = "Valor de p simulado", ylabel = "Densidad")
-hist!(ax2, muestras; bins = -0.0005:0.005:1.0005, normalization = :pdf)   # 5 puntos de la rejilla por barra
+hist!(ax2, muestras; bins = 0:0.005:1, normalization = :pdf)   # 5 puntos de la rejilla por barra
 xlims!(ax2, extrema(muestras)...)
 vlines!(ax2, [media]; color = :black)
 vlines!(ax2, intervalo; color = :gray, linestyle = :dot)
@@ -116,18 +117,19 @@ save(joinpath(resultados, "inferencia_bayesiana.png"), fig; px_per_unit = 1.5)
 
 Dos analistas se enfrentan a la misma muestra empírica, $n = 200$ y $k = 75$:
 
-- **Analista A (agnóstico):** adopta una *prior* uniforme, sin prejuicios, $\text{Beta}(1, 1)$.
+- **Analista A (agnóstico):** adopta una *prior* uniforme, $\text{Beta}(1, 1)$. Uniforme en $\theta$ no quiere decir sin prejuicios: deja de serlo si se reparametriza, por ejemplo en log-odds, $\log\frac{\theta}{1 - \theta}$. La alternativa clásica es la *prior* de Jeffreys, $\text{Beta}(\tfrac{1}{2}, \tfrac{1}{2})$.
 - **Analista B (dogmático):** mantiene una *prior* muy concentrada en torno a la hipótesis de que la norma no existe, $\text{Beta}(1, 100)$.
 
-1. **Tarea:** modifica el script para simular las distribuciones a posteriori de ambos analistas.
-2. **Pregunta causal:** ¿cuántos datos adicionales $n$ necesitaría observar el analista B para que la media de su posterior quede a menos de $\pm 0.02$ de la proporción de la muestra? Explica el fenómeno del **peso de la evidencia** (*weight of evidence*).
+1. **Tarea:** modifica el script para simular las distribuciones a posteriori de ambos analistas, y la de un tercero con la *prior* de Jeffreys.
+2. **Pregunta causal:** suponiendo que la proporción de la muestra se mantiene en $0.375$, ¿cuántas observaciones adicionales necesitaría el analista B para que la media de su posterior quede a menos de $\pm 0.02$ de ella? Explica, con la media a posteriori de la sección 1, por qué una *prior* $\text{Beta}(\alpha, \beta)$ pesa como $\alpha + \beta$ observaciones ficticias. ¿Importa aquí la diferencia entre la uniforme y la de Jeffreys?
 
 ### Ejercicio 2: actualización secuencial, individuo a individuo (*online learning*)
 
-El principio de consistencia bayesiana establece que procesar 200 observaciones en bloque equivale exactamente a actualizar la distribución a posteriori **individuo a individuo**: la *posterior* tras la observación $i$ es la *prior* de la observación $i + 1$.
+Con observaciones independientes, la verosimilitud de la muestra es el producto de las de cada observación, y procesar 200 observaciones en bloque equivale exactamente a actualizar la distribución a posteriori **individuo a individuo**: la *posterior* tras la observación $i$ es la *prior* de la observación $i + 1$.
 
 1. **Tarea:** escribe un bucle `for` que recorra un vector de 200 respuestas individuales, `0` o `1` (por ejemplo, `shuffle([ones(Int, 75); zeros(Int, 125)])`), y dibuja la evolución de la media a posteriori $\mathbb{E}[\theta_t]$ para $t \in \{1, \dots, 200\}$, junto con el estrechamiento de la banda de credibilidad del 95 %.
 2. **Pregunta causal:** demuestra empíricamente que la desviación típica a posteriori disminuye a ritmo $\mathcal{O}(1/\sqrt{n})$, es decir, la varianza a ritmo $\mathcal{O}(1/n)$.
+3. **En la pizarra:** la primera actualización tiene $n = 1$ y $k = 0$ o $k = 1$. ¿Qué habría pasado con una rejilla que incluyera $0$ y $1$? Pruébalo.
 
 ### Ejercicio 3: decisión bajo incertidumbre con una función de pérdida asimétrica
 
@@ -143,6 +145,22 @@ Un regulador público debe decidir si financia un programa de intervención soci
    $$
 
 2. **Pregunta causal:** aunque la estimación puntual de la prevalencia sea $\mathbb{E}[p \mid \text{datos}] = 0.373$, por debajo del umbral, ¿cuál es la decisión óptima, la que minimiza la pérdida esperada? Demuestra por qué la decisión racional exige considerar toda la distribución a posteriori y no un mero valor promedio.
+
+### Ejercicio 4: intervalo de confianza e intervalo de credibilidad
+
+1. **Tarea:** calcula el intervalo de confianza del 95 % de la proporción, $\hat{p} \pm 1.96\sqrt{\hat{p}(1 - \hat{p})/n}$, y compáralo con el de credibilidad del código base. Repite la comparación con una muestra de $n = 16$ y $k = 6$, la misma proporción, con la *prior* del código base y con la del analista B.
+2. **Pregunta causal:** ¿cuándo casi coinciden los dos intervalos y cuándo se separan? ¿Qué pregunta responde cada uno?
+
+### Ejercicio 5: la respuesta aleatorizada de Warner
+
+El código base supone que todo el mundo responde con sinceridad. En una pregunta tabú, el problema principal no es la *prior*, sino el sesgo de deseabilidad social. La respuesta aleatorizada de Warner (1965) lo evita con un mecanismo de azar que solo ve el encuestado: con probabilidad $\pi$ contesta a «¿sostienes la norma?» y, si no, a «¿no la sostienes?». Nadie sabe a qué pregunta respondió cada uno, y la probabilidad de un «sí» pasa a ser una mezcla conocida de $\theta$ y del azar:
+
+$$
+\lambda(\theta) = \pi\,\theta + (1 - \pi)(1 - \theta)
+$$
+
+1. **Tarea:** con $\pi = 0.7$ y 90 «síes» de 200, cambia solo la verosimilitud: $\lambda(\theta)$ en lugar de $\theta$. Compara la posterior con la del código base.
+2. **Pregunta causal:** ¿cuánto se ensancha la posterior, y cuántos encuestados que respondieran directamente darían la misma precisión? ¿Por qué el mecanismo no sirve con $\pi = 0.5$? El modelo de medición importa tanto como el de inferencia, y el marco bayesiano lo incorpora sin cambiar nada más.
 
 ## 4. Criterio de verificación por integración continua
 
