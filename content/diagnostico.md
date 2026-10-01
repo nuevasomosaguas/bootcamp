@@ -7,6 +7,8 @@ El bootcamp parte de las matemáticas del Bachillerato, pero no de las mismas pa
 
 Esta prueba dice qué repasar y antes de qué semana. Son veinte problemas en seis bloques, para papel y lápiz, sin calculadora salvo en el último de probabilidad; una hora y media basta. Resuelve cada bloque entero antes de abrir sus soluciones. **Si fallas dos problemas o más de un bloque, repasa ese bloque antes de la primera semana que lo usa.** Nadie corrige esta prueba: es para ti.
 
+Si elegiste Latín y no has visto matemáticas desde 4.º de ESO, el [puente desde Humanidades](../puente/) ordena en diez semanas, antes de la semana 1, lo que hace falta para superar esta prueba.
+
 | Bloque | Lo usan las semanas | En el Bachillerato |
 | :--- | :--- | :--- |
 | A. Álgebra y funciones | 1 a 6 | Todas las modalidades con matemáticas |

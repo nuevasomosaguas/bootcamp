@@ -7,7 +7,7 @@ Lo que sirve para las doce semanas, sea cual sea la guía: cómo trabajar, cómo
 
 ## Antes de la semana 1
 
-- **La [prueba de nivel](../diagnostico/).** Veinte problemas de Bachillerato, en seis bloques, que dicen qué repasar y antes de qué semana. Las matemáticas del Bachillerato no son las mismas en Ciencias, en Ciencias Sociales o en Humanidades con Latín, y la prueba lo tiene en cuenta.
+- **La [prueba de nivel](../diagnostico/).** Veinte problemas de Bachillerato, en seis bloques, que dicen qué repasar y antes de qué semana. Las matemáticas del Bachillerato no son las mismas en Ciencias, en Ciencias Sociales o en Humanidades con Latín, y la prueba lo tiene en cuenta. Quien eligió Latín tiene, además, el [puente desde Humanidades](../puente/): diez semanas de preparación antes de la semana 1.
 - **El entorno, instalado y probado.** Julia, la terminal, Git y un editor, como explica la página del [entorno](https://nuevasomosaguas.github.io/entorno.html). El primer día se programa, no se instala.
 - **Las dos primeras lecciones de [*The Missing Semester*](https://missing.csail.mit.edu/2026/)**, la introducción a la consola y el entorno de la línea de órdenes: la semana 2 las da por sabidas.
 - **Los capítulos 1 a 3 de *Mathematics for Humanists*, de Gintis** (más abajo), si vienes de un bachillerato de letras: leer matemáticas, la lógica y los conjuntos. Son el idioma en que están escritas todas las guías.
