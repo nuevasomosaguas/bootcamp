@@ -1,0 +1,25 @@
+# Corrige la entrega de la semana 1 con cada push o pull request que cambie el script.
+name: Semana 1
+on:
+  push:
+    paths: ["semana-01/laboratorio_semana1.jl"]
+  pull_request:
+    paths: ["semana-01/laboratorio_semana1.jl"]
+  workflow_dispatch:
+jobs:
+  corregir:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: julia-actions/setup-julia@v2
+        with:
+          version: "1"
+      - uses: julia-actions/cache@v2
+      - run: julia --project=semana-01 -e 'using Pkg; Pkg.instantiate()'
+      - run: julia --project=semana-01 --depwarn=yes semana-01/test_semana1.jl
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: resultados-semana-01
+          path: semana-01/resultados/
+          if-no-files-found: ignore

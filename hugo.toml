@@ -1,0 +1,25 @@
+baseURL = "/"
+defaultContentLanguage = "es"
+locale = "es-ES"
+title = "Bootcamp de verano"
+theme = "somosaguas"
+# Cada semana lleva la fecha de su lunes, que está en el futuro hasta que llega.
+buildFuture = true
+
+[params]
+  autor = "Nueva Somosaguas"
+  descripcion = "Doce semanas de nivelación en álgebra matricial, cálculo, probabilidad y demografía, con Julia y la terminal."
+  mainSections = ["semanas"]
+
+[[menus.main]]
+  name = "Programa"
+  url = "https://nuevasomosaguas.github.io/bootcamp.html"
+  weight = 10
+
+[markup.goldmark.renderer]
+  unsafe = true
+[markup.goldmark.extensions.passthrough]
+  enable = true
+  [markup.goldmark.extensions.passthrough.delimiters]
+    block = [["$$", "$$"]]
+    inline = [["$", "$"]]

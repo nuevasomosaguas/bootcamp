@@ -1,0 +1,13 @@
+[deps]
+CairoMakie = "13f3f980-e62b-5c42-98c6-ff1f3baf88f0"
+LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
+Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
+Statistics = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
+Somosaguas = "48849800-de91-4042-a555-19c171dd5f39"
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[sources]
+Somosaguas = {rev = "master", url = "https://github.com/nuevasomosaguas/somosaguas-makie"}
+
+[compat]
+julia = "1.11"

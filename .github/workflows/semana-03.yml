@@ -1,0 +1,27 @@
+# Corrige la entrega de la semana 3 con cada push o pull request que cambie el script.
+name: Semana 3
+on:
+  push:
+    paths: ["semana-03/laboratorio_semana3.jl"]
+  pull_request:
+    paths: ["semana-03/laboratorio_semana3.jl"]
+  workflow_dispatch:
+jobs:
+  corregir:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # el historial completo, para revisar las ramas y fusiones
+      - uses: julia-actions/setup-julia@v2
+        with:
+          version: "1"
+      - uses: julia-actions/cache@v2
+      - run: julia --project=semana-03 -e 'using Pkg; Pkg.instantiate()'
+      - run: julia --project=semana-03 --depwarn=yes semana-03/test_semana3.jl
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: resultados-semana-03
+          path: semana-03/resultados/
+          if-no-files-found: ignore
