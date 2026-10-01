@@ -9,7 +9,7 @@ Esta prueba dice qué repasar y antes de qué semana. Son veinte problemas en se
 
 Resuelve cada bloque entero antes de abrir sus soluciones. Nadie corrige esta prueba: es para ti, y por eso solo sirve si es honesta. Reconocer una solución no es saber encontrarla, y quien mira antes de tiempo solo se engaña a sí mismo: lo descubrirá en la primera semana que use ese bloque, cuando ya no haya tiempo de repasarlo con calma.
 
-Si elegiste Latín y no has visto matemáticas desde 4.º de ESO, el [puente desde Humanidades](../puente/) ordena en diez semanas, antes de la semana 1, lo que hace falta para superar esta prueba.
+Si elegiste Latín y no has visto matemáticas desde 4.º de ESO, el [puente desde Humanidades](../puente/) ordena en dieciocho semanas durante 2.º de Bachillerato, o en diez después, lo que hace falta para superar esta prueba.
 
 | Bloque | Lo usan las semanas | En el Bachillerato |
 | :--- | :--- | :--- |
