@@ -32,13 +32,15 @@ Unir dos registros administrativos por una clave común —el padrón con el cen
    | Ordenar y fusionar | $O(n \log n + m \log m)$ | Ordenar las dos por la clave y recorrerlas a la vez, como una cremallera |
    | Tabla hash | $O(n + m)$ en promedio | Guardar una en una tabla hash y buscar en ella cada fila de la otra |
 
+   Las tres dan lo mismo si la clave no se repite dentro de cada tabla. En los registros reales, las uniones de uno a muchos son lo normal, y una tabla hash que sustituye el valor de una clave repetida pierde filas sin avisar: antes de unir, se comprueba la clave.
+
 5. **Las colisiones y el problema del cumpleaños.** Dos claves distintas colisionan si caen en la misma cubeta. Con $n$ claves repartidas al azar en $m$ cubetas, sea $I_{ij}$ la variable indicadora de que las claves $i$ y $j$ colisionan, con $\mathbb{E}[I_{ij}] = P(I_{ij} = 1) = 1/m$. Por la linealidad de la esperanza, que no exige independencia,
 
    $$
    \mathbb{E}[\text{pares en colisión}] = \sum_{i < j} \mathbb{E}[I_{ij}] = \binom{n}{2} \frac{1}{m}
    $$
 
-   y la probabilidad de que no colisione ningún par es $\prod_{i=1}^{n-1} (1 - i/m) \approx e^{-n^2/2m}$. Con $m = 365$ días y $n = 23$ personas, ya es más probable que dos cumplan años el mismo día que lo contrario.
+   y la probabilidad de que no colisione ningún par es $\prod_{i=1}^{n-1} (1 - i/m) \approx e^{-n(n-1)/2m}$, con $1 - x \approx e^{-x}$ en cada factor. Con $m = 365$ días y $n = 23$ personas, ya es más probable que dos cumplan años el mismo día que lo contrario.
 
 ## 2. Código base de referencia (`laboratorio_semana8.jl`)
 
@@ -104,23 +106,31 @@ Las dos tablas tienen 8169 y 8117 filas, y los bucles anidados hacen $8169 \time
 
 ### Ejercicio 1: la tabla hash
 
+- **Antes de unir:** comprueba con `allunique` que el código de municipio no se repite en ninguna de las dos tablas. España tiene unos 8130 municipios, y la tabla de los hombres tiene 8169 filas: ¿qué son las sobrantes? Mira los códigos que terminan en `000` y los municipios que están en una tabla y no en la otra, y explica por qué el código lleva delante el de la provincia.
 - **Tarea:** escribe `insertar!(t, clave, valor)`, que añade el par a su cubeta o sustituye el valor si la clave ya está, y `buscar(t, clave)`, que devuelve `valor, comparaciones`, o `nothing, comparaciones` si la clave no está, contando las comparaciones de claves que hace. Con ellas, escribe `unir_hash(a, b)`, que guarda `a` en una tabla de `nextpow(2, length(a))` cubetas, busca en ella cada fila de `b` y devuelve `pares, comparaciones`, con los pares en la forma `(municipio, hombres, mujeres)`.
-- **Pregunta causal:** la unión por hash de las dos tablas completas hace del orden de $12\,000$ comparaciones, frente a 66 millones. Añade sus tiempos a la figura: ¿qué pendiente sale, y por qué no es exactamente 1?
+- **Pregunta causal:** la unión por hash de las dos tablas completas hace del orden de $12\,000$ comparaciones, frente a 66 millones. Añade sus tiempos a la figura: ¿qué pendiente sale, y por qué no es exactamente 1? Si una clave se repitiera en `a`, ¿qué pares perdería `unir_hash`, y cómo guardarías varios valores por clave?
+- **En la pizarra:** Cormen y sus coautores (cap. 11) desaconsejan que $m$ sea una potencia de 2 con el método de división, y `unir_hash` usa `nextpow(2, …)`. ¿Por qué lo desaconsejan, y por qué aquí funciona? Compara cuántas cubetas ocupan 1000 múltiplos de $2^{14}$ con `mod(k, 2^14)` y con `mod(hash(k), 2^14)`.
 
 ### Ejercicio 2: ordenar y fusionar
 
-- **Tarea:** escribe `unir_ordenado(a, b)`, que ordena las dos tablas por la clave con `sort` y las recorre a la vez con dos índices, avanzando el de la clave menor. Devuelve `pares, comparaciones`, contando solo las comparaciones de la fusión.
+- **Tarea:** escribe `unir_ordenado(a, b)`, que ordena las dos tablas por la clave con `sort` y las recorre a la vez con dos índices, avanzando el de la clave menor. Devuelve `pares, comparaciones`, contando solo las comparaciones de la fusión: una por paso, aunque cada paso pregunte si las claves son iguales y cuál es menor, porque es una sola comparación de tres resultados.
 - **Pregunta causal:** la fusión hace menos comparaciones que la tabla hash, unas $8000$. ¿Por qué no es entonces la más barata? ¿Cuándo convendría a pesar de todo, por ejemplo si las tablas ya llegan ordenadas o no caben en memoria?
 
 ### Ejercicio 3: la lista enlazada
 
-- **Tarea:** escribe `invertir(lista)`, que devuelve una lista nueva con los mismos valores en orden inverso, con un bucle. Pruébala con una lista de 200 000 nodos. Escribe después la versión recursiva, en una línea, y ejecútala con la misma lista.
-- **Pregunta causal:** ¿por qué la versión recursiva termina en `StackOverflowError`? Mide cuánto tarda en llegar al elemento 100 000 una lista y cuánto un vector, y explica la diferencia con la memoria de la semana 2.
+- **Tarea:** escribe `invertir(lista)`, que devuelve una lista nueva con los mismos valores en orden inverso, con un bucle. Pruébala con una lista de 200 000 nodos. Escribe después la versión recursiva, en una línea, y ejecútala con la misma lista. Termina las líneas que crean listas largas con `;` en el REPL: para mostrar una lista, Julia la recorre de forma recursiva, y también se desborda; lo mismo pasa con `==` entre dos listas distintas.
+- **Pregunta causal:** ¿por qué la versión recursiva termina en `StackOverflowError`? Mide cuánto tarda en llegar al elemento 100 000 una lista y cuánto un vector, y cuánto en recorrer cada uno entero. Una lista creada en un bucle tiene sus nodos casi seguidos en memoria: ¿por qué es aun así más lenta de recorrer que el vector? Piensa en qué necesita saber el procesador antes de pedir el nodo siguiente, y compáralo con la memoria por columnas de la semana 2.
 
 ### Ejercicio 4: las colisiones y el cumpleaños
 
-- **Tarea:** escribe `pares_en_colision(t)`, que cuenta los pares de claves que comparten cubeta, $\sum_b \binom{n_b}{2}$. Compáralo con $\binom{n}{2}/m$ para los códigos de municipio de la DGT y para 5000 claves aleatorias en $2^{14}$ cubetas. Calcula después, para el problema del cumpleaños, la probabilidad de que no colisione nadie con $n = 23$ y $m = 365$, exacta y aproximada.
+- **Tarea:** escribe `pares_en_colision(t)`, que cuenta los pares de claves que comparten cubeta, $\sum_b \binom{n_b}{2}$. Compáralo con $\binom{n}{2}/m$ para los códigos de municipio de la DGT y para 5000 claves aleatorias en $2^{14}$ cubetas. Calcula después, para el problema del cumpleaños, la probabilidad de que no colisione nadie con $n = 23$ y $m = 365$, exacta y aproximada con $e^{-n(n-1)/2m}$. ¿Cuánto se separa la aproximación más tosca, $e^{-n^2/2m}$?
 - **Pregunta causal:** demuestra en la pizarra la fórmula de la esperanza con variables indicadoras. ¿Por qué no hace falta que las colisiones sean independientes? ¿Cuántas cubetas harían falta para que la probabilidad de no tener ninguna colisión con los 8169 municipios fuera la mitad?
+
+### Ejercicio 5: cuando la clave falla (sin entrega)
+
+En los registros administrativos reales, el problema de unir rara vez es la velocidad: las claves fallan, con identificadores ausentes, nombres mal escritos o formatos distintos. El enlace probabilístico de registros de Fellegi y Sunter («A Theory for Record Linkage», 1969) compara varios campos a la vez y decide si dos registros son la misma persona con un cociente de verosimilitudes, la probabilidad de la semana 6.
+
+- **En la pizarra:** si dos registros coinciden en el año de nacimiento y el código postal pero no en el nombre, ¿cómo pesarías cada coincidencia? ¿Qué dos errores puede cometer el enlace, y qué cuesta cada uno en una investigación? Unir registros de personas plantea además cuestiones de protección de datos y de secreto estadístico: ¿qué permite el Reglamento General de Protección de Datos, y por qué el INE y la DGT publican los microdatos agregados o anonimizados?
 
 ## 4. Criterio de verificación por integración continua
 
@@ -128,7 +138,7 @@ La entrega es `semana-08/laboratorio_semana8.jl` en el repositorio de la asignat
 
 1. Se ejecuta sin excepciones ni advertencias en Julia 1.11 o posterior y deja la figura en `semana-08/resultados/`.
 2. Supera `test_tabla_hash`: con 10 000 claves en $2^{14}$ cubetas, `buscar` devuelve el valor de cada clave con dos comparaciones o menos de media, `nothing` para las que no están, e `insertar!` sustituye el valor de una clave repetida sin duplicarla.
-3. Supera `test_uniones`: `unir_hash` y `unir_ordenado` dan los mismos pares que `unir_anidado`, los 8116 municipios, con no más de $2m$ y de $n + m$ comparaciones, respectivamente.
+3. Supera `test_uniones`: `unir_hash` y `unir_ordenado` dan los mismos pares que `unir_anidado`, los 8116 municipios, con no más de $2m$ y de $n + m$ comparaciones, respectivamente: en la fusión, una por paso.
 4. Supera `test_invertir`: `invertir` da la vuelta a una lista de 200 000 nodos, demasiado larga para una versión recursiva.
 5. Supera `test_colisiones`: `pares_en_colision` cuenta los pares de cada cubeta y, con 5000 claves aleatorias, queda a menos de un 20 % de $\binom{n}{2}/m$.
 
