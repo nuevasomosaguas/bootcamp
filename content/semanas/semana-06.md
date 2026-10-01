@@ -128,7 +128,7 @@ Dos analistas se enfrentan a la misma muestra empírica, $n = 200$ y $k = 75$:
 Con observaciones independientes, la verosimilitud de la muestra es el producto de las de cada observación, y procesar 200 observaciones en bloque equivale exactamente a actualizar la distribución a posteriori **individuo a individuo**: la *posterior* tras la observación $i$ es la *prior* de la observación $i + 1$.
 
 1. **Tarea:** escribe un bucle `for` que recorra un vector de 200 respuestas individuales, `0` o `1` (por ejemplo, `shuffle([ones(Int, 75); zeros(Int, 125)])`), y dibuja la evolución de la media a posteriori $\mathbb{E}[\theta_t]$ para $t \in \{1, \dots, 200\}$, junto con el estrechamiento de la banda de credibilidad del 95 %.
-2. **Pregunta causal:** demuestra empíricamente que la desviación típica a posteriori disminuye a ritmo $\mathcal{O}(1/\sqrt{n})$, es decir, la varianza a ritmo $\mathcal{O}(1/n)$.
+2. **Pregunta causal:** demuestra empíricamente que la desviación típica a posteriori disminuye a ritmo $\mathcal{O}(1/\sqrt{n})$, es decir, la varianza a ritmo $\mathcal{O}(1/n)$. Cuenta bien $n$: la *prior* $\text{Beta}(3, 6)$ pesa como 9 observaciones ficticias (ejercicio 1), así que tras $t$ respuestas la posterior es la de $n = 9 + t$. Frente a $t$, la pendiente en escala log-log sale cerca de $-0.36$; frente a $n$, en torno a $-0.48$, porque la desviación, $\sqrt{\theta(1 - \theta)/n}$, también depende de por dónde va la media.
 3. **En la pizarra:** la primera actualización tiene $n = 1$ y $k = 0$ o $k = 1$. ¿Qué habría pasado con una rejilla que incluyera $0$ y $1$? Pruébalo.
 
 ### Ejercicio 3: decisión bajo incertidumbre con una función de pérdida asimétrica

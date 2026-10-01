@@ -41,7 +41,7 @@ Consideremos la difusión de una creencia, una tecnología o una norma social en
    N(t_{\text{inflexión}}) = \frac{K}{2}
    $$
 
-5. **El método de Euler.** Sin solución exacta, se avanza por la tangente: $N_{k+1} = N_k + f(N_k)\,\Delta t$. Su error global es de orden 1, proporcional a $\Delta t$; el integrador `Tsit5` del ejercicio 3, de orden 5, lo reduce como $\Delta t^5$. Y un paso demasiado largo no solo pierde precisión: puede inventar dinámicas que la ecuación no tiene, como muestra el ejercicio 2.
+5. **El método de Euler.** Sin solución exacta, se avanza por la tangente: $N_{k+1} = N_k + f(N_k)\,\Delta t$. Su error global es de orden 1, proporcional a $\Delta t$; el integrador `Tsit5` del ejercicio 3, de orden 5, lo reduce como $\Delta t^5$ cuando el paso es pequeño (con los pasos del ejercicio 2, la pendiente pasa de 4.2 entre los dos más largos a 5.0 entre los dos más cortos, y la de todos juntos es 4.7). Y un paso demasiado largo no solo pierde precisión: puede inventar dinámicas que la ecuación no tiene, como muestra el ejercicio 2.
 
 ## 2. Código base de referencia (`laboratorio_semana5.jl`)
 
@@ -138,7 +138,7 @@ El SIR supone **contagio simple**: un solo contacto basta, y la población está
 La entrega es `semana-05/laboratorio_semana5.jl` en el repositorio de la asignatura. Con cada push, la integración continua ejecuta `semana-05/test_semana5.jl`, y el laboratorio se supera si el script:
 
 1. Se ejecuta sin excepciones ni advertencias en Julia 1.11 o posterior.
-2. Resuelve la logística por el método de Euler y el SIR del ejercicio 2 con el integrador de paso adaptativo, en una solución llamada `sir` que conserva la población, $S + I + R$ (el porqué es la pregunta de la pizarra del ejercicio 3).
+2. Resuelve la logística por el método de Euler y el SIR del ejercicio 3 con el integrador de paso adaptativo, en una solución llamada `sir` que conserva la población, $S + I + R$ (el porqué es la pregunta de la pizarra del ejercicio 3).
 3. Supera el test unitario `test_pico_inflexion`, que comprueba que `N` es la trayectoria de Euler con los `r`, `K`, `N0` y `dt` del script, y que `t_inflexion` está a menos de $3\,\Delta t$ del instante exacto, $\ln\big((K - N_0)/N_0\big)/r$: Euler llega con un retraso de entre 1 y 2 pasos. El test lee `N`, `t`, `r`, `K`, `N0`, `dt` y `t_inflexion`: el script conserva esos nombres del código base.
 4. Deja el panel de dos gráficos, `semana-05/resultados/difusion_logistica.png`, de al menos 2000 píxeles de ancho.
 
