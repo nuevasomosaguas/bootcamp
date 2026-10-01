@@ -24,4 +24,8 @@ const entrega = Module(:Entrega)
         @test size(V̄) == size(entrega.V)
         @test all(abs.(norm.(eachrow(V̄)) .- 1) .<= 1e-7)
     end
+
+    @testset "normalizar rechaza una fila en el origen" begin
+        @test_throws ArgumentError entrega.normalizar([0.6 0.0 0.8; 0.0 0.0 0.0])
+    end
 end
