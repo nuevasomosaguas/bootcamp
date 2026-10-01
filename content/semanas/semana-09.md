@@ -47,6 +47,34 @@ Las semanas 9 a 12 son un solo proyecto de replicación. Cada semana construye u
 
    donde $P_{t,x}$ es la población con $x$ años el 1 de enero de $t$, $b_{2,i}$ es lo que vivió en el año el fallecido $i$ del triángulo superior, desde el 1 de enero hasta su muerte, y $b_{1,i}$, lo que vivió el del inferior desde su cumpleaños hasta su muerte. Los supervivientes de la generación $t - x - 1$ viven, de media, medio año con edad $x$, y los de la generación $t - x$, que siguen con edad $x$ el 1 de enero de $t + 1$, otro medio. La aproximación de los manuales, $D_x / \tfrac{1}{2}(P_{t,x} + P_{t+1,x})$, olvida lo que vivieron los fallecidos.
 
+   <figure>
+   <svg viewBox="0 0 460 390" width="460" role="img" aria-label="Diagrama de Lexis del año t y la edad x, con los dos triángulos y una vida en cada uno" font-size="15" fill="currentColor">
+     <polygon points="80,340 380,340 380,40" fill="var(--granate)" fill-opacity="0.10"/>
+     <polygon points="80,340 80,40 380,40" fill="var(--gris)" fill-opacity="0.14"/>
+     <rect x="80" y="40" width="300" height="300" fill="none" stroke="currentColor"/>
+     <line x1="80" y1="340" x2="380" y2="40" stroke="currentColor" stroke-dasharray="5 4"/>
+     <line x1="150" y1="340" x2="270" y2="220" stroke="var(--granate)" stroke-width="2.5"/>
+     <path d="M263,213 l14,14 M277,213 l-14,14" stroke="var(--granate)" stroke-width="2.5"/>
+     <line x1="80" y1="250" x2="185" y2="145" stroke="currentColor" stroke-width="2.5"/>
+     <path d="M178,138 l14,14 M192,138 l-14,14" stroke="currentColor" stroke-width="2.5"/>
+     <text x="300" y="300" text-anchor="middle">triángulo inferior, D₁</text>
+     <text x="300" y="318" text-anchor="middle">generación t − x</text>
+     <text x="180" y="70" text-anchor="middle">triángulo superior, D₂</text>
+     <text x="180" y="88" text-anchor="middle">generación t − x − 1</text>
+     <path d="M150,352 v6 h120 v-6" fill="none" stroke="var(--granate)"/>
+     <text x="210" y="375" text-anchor="middle" fill="var(--granate)">b₁</text>
+     <path d="M80,28 v-6 h105 v6" fill="none" stroke="currentColor"/>
+     <text x="132" y="16" text-anchor="middle">b₂</text>
+     <text x="80" y="362" text-anchor="middle">1 ene t</text>
+     <text x="380" y="362" text-anchor="middle">1 ene t + 1</text>
+     <text x="70" y="345" text-anchor="end">x</text>
+     <text x="70" y="45" text-anchor="end">x + 1</text>
+     <text x="70" y="195" text-anchor="end">Pₜ,ₓ</text>
+     <text x="390" y="195">Pₜ₊₁,ₓ</text>
+   </svg>
+   <figcaption>El año t en abscisas y la edad x en ordenadas: cada vida es una diagonal y cada × una muerte. La diagonal discontinua es la de quien cumple x años el 1 de enero; por debajo queda la generación t − x, que cumple x años durante t, y por encima la t − x − 1, que ya los tenía el 1 de enero. P<sub>t,x</sub> se cuenta en el borde izquierdo y P<sub>t+1,x</sub> en el derecho.</figcaption>
+   </figure>
+
 4. **El grupo abierto.** La última edad, 100 y más años, cierra la tabla: $q_{100+} = 1$ y $L_{100+} = a_{100+}\, l_{100+}$. Hasta 2015, el INE tomaba $a_{100+} = 1/m_{100+}$, lo que vale en una población estacionaria; desde entonces, $a_{100+}$ es la media observada de los años vividos después de los 100 por quienes mueren con 100 o más, y $e_{100+} = a_{100+}$.
 
 5. **La descomposición de Arriaga.** Entre dos tablas, la diferencia de esperanza de vida al nacer se reparte exactamente entre las edades. La contribución de la edad $x < \omega$, con $\omega$ el grupo abierto, es
@@ -160,7 +188,15 @@ El archivo trae 436 118 defunciones. La tabla ingenua da $e_0 = 83.880$; el INE 
 
 ### Ejercicio 1: la exposición de Lexis
 
-- **Tarea:** escribe `tasas_lexis(registros, P0, P1, año)`, que devuelve `m, a`, los dos vectores de la fórmula del punto 3, con el grupo abierto en la última edad, $w = $ `length(P0) - 1`. Como los microdatos no traen el día, aproxima las fechas por meses: $b_1 = (\text{mes de defunción} - \text{mes de nacimiento})/12$ si el fallecido murió en un mes posterior al de su cumpleaños, y $1/36$ si murió el mismo mes; $b_2 = (\text{mes de defunción} - \tfrac{1}{2})/12$. Los años vividos desde el último cumpleaños dan $a_x$: $b_1$ en el triángulo inferior, y $1 - (\text{mes de nacimiento} - \text{mes de defunción})/12$ en el superior, o $1 - 1/36$ si coinciden los meses. En el grupo abierto se suman además los años por encima de $w$, $x - w$, y el triángulo inferior es solo el de quienes cumplen $w$ años durante el año: los que ya tenían $w$ o más el 1 de enero son del superior aunque cumplan años, porque ya estaban en el grupo. Una edad sin defunciones toma $a_x = 1/2$. Con ella, construye `residentes`, las defunciones de residentes en España; `replicada`, la tabla de ambos sexos, y `por_sexo`, un diccionario `"Hombres" => tabla, "Mujeres" => tabla`. Debe salir $e_0 = 84.0096$, frente al 84.0097 del INE; 81.3847 y 86.5282 para hombres y mujeres, frente a 81.3848 y 86.5284.
+- **Tarea:** escribe `tasas_lexis(registros, P0, P1, año)`, que devuelve `m, a`, los dos vectores de la fórmula del punto 3, con el grupo abierto en la última edad, $w = $ `length(P0) - 1`. Los microdatos no traen el día, así que las fechas se aproximan por meses. Para cada fallecido con edad $x$ en años cumplidos:
+
+  1. **El triángulo.** Lo decide la edad, no los meses, que no dicen si quien nació y murió el mismo mes había cumplido ya años: si $x = \text{año} - \text{año de nacimiento}$, los cumplió durante el año y es del triángulo inferior; si $x$ es uno menos, del superior. Cuenta los registros que no encajan en ninguno de los dos casos: en 2024 deben salir 0.
+  2. **Lo vivido en el año con edad $x$.** En el triángulo inferior, $b_1 = (\text{mes de defunción} - \text{mes de nacimiento})/12$ si murió en un mes posterior al de su cumpleaños, y $1/36$ si murió el mismo mes. En el superior, $b_2 = (\text{mes de defunción} - \tfrac{1}{2})/12$.
+  3. **Lo vivido desde el último cumpleaños**, cuya media por edad es $a_x$. Si cumplió años durante el año, es la misma cuenta que $b_1$; si no, $1 - (\text{mes de nacimiento} - \text{mes de defunción})/12$, o $1 - 1/36$ si coinciden los meses.
+  4. **El grupo abierto.** A lo vivido desde el último cumpleaños se suman los años por encima de $w$, $x - w$. El triángulo inferior es solo el de quienes cumplen $w$ años durante el año. Los que ya tenían $w$ o más el 1 de enero son del superior aunque cumplan años, porque ya estaban en el grupo.
+  5. **Una edad sin defunciones** toma $a_x = 1/2$.
+
+  Con `tasas_lexis`, construye `residentes`, las defunciones de residentes en España; `replicada`, la tabla de ambos sexos, y `por_sexo`, un diccionario `"Hombres" => tabla, "Mujeres" => tabla`. Debe salir $e_0 = 84.0096$, frente al 84.0097 del INE; 81.3847 y 86.5282 para hombres y mujeres, frente a 81.3848 y 86.5284.
 - **Pregunta causal:** la tabla ingenua se separa del INE 0.13 años por cuatro decisiones. Cámbialas de una en una sobre `replicada` y mide cuánto mueve cada una $e_0$: contar a los no residentes (debe dar 83.902), la población media como exposición (83.977), $a_x = 1/2$ en todas las edades salvo el cierre (84.010) y el cierre con $a_{100+} = 1/m_{100+}$ (84.019). ¿Cuál pesa más? Los 2807 fallecidos no residentes son el 0.6 % del total, y bajan $e_0$ más de lo que esa proporción sugiere: compara su edad con la de los residentes. ¿Quiénes son, y por qué su muerte no tiene exposición en el denominador?
 - **En la pizarra:** deduce $q_x = m_x / (1 + (1 - a_x)\,m_x)$ y la exposición de Lexis, con el diagrama dibujado. ¿Por qué $1/36$ de año cuando el cumpleaños y la muerte caen en el mismo mes? Si se olvida la regla de los triángulos del grupo abierto, $m_{100+}$ se separa un 2 % del del INE y $e_0$ no se mueve: ¿por qué, desde 2015, la tasa del grupo abierto no interviene en la esperanza de vida?
 
@@ -172,7 +208,15 @@ El archivo trae 436 118 defunciones. La tabla ingenua da $e_0 = 83.880$; el INE 
 
 ### Ejercicio 3: la ficha de replicación en Typst
 
-- **Tarea:** al final del script, escribe con `TOML.print` el archivo `resultados/semana9.toml`, con tu $e_0$ y la del INE, de ambos sexos, de los hombres y de las mujeres. Escribe después `semana-09/ficha.typ`: una página con un título, una frase que diga qué se replica, una tabla con las tres esperanzas de vida replicadas, las del INE y su diferencia, y la figura. El documento lee los números con `toml()` y no copia ninguno a mano. Empieza así, y complétalo con el [tutorial](https://typst.app/docs/tutorial/):
+- **Tarea:** al final del script, escribe con `TOML.print` el archivo `resultados/semana9.toml`, con tu $e_0$ y la del INE, de ambos sexos, de los hombres y de las mujeres: una tabla `e0` con una subtabla por sexo, `ambos`, `hombres` y `mujeres`, y en cada una las claves `replicada` e `ine`.
+
+  ```toml
+  [e0.ambos]
+  replicada = 84.0096   # tu e₀, con todas sus cifras
+  ine = 84.009718
+  ```
+
+  Y lo mismo con `[e0.hombres]` y `[e0.mujeres]`. La ficha los lee como `r.ambos.replicada` o `r.mujeres.ine`. Escribe después `semana-09/ficha.typ`: una página con un título, una frase que diga qué se replica, una tabla con las tres esperanzas de vida replicadas, las del INE y su diferencia, y la figura. El documento lee los números con `toml()` y no copia ninguno a mano. Empieza así, y complétalo con el [tutorial](https://typst.app/docs/tutorial/):
 
   ```typst
   #set page(paper: "a4", margin: 2cm)
