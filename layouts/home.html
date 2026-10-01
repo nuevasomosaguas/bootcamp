@@ -1,0 +1,6 @@
+{{/* La portada del tema enseña las diez últimas entradas, como un blog; el bootcamp las
+     enseña todas, las doce semanas en orden. */}}
+{{ define "main" }}
+  {{ .Content }}
+  {{ partial "filas.html" (where site.RegularPages "Section" "in" site.Params.mainSections) }}
+{{ end }}
