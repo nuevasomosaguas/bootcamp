@@ -22,6 +22,12 @@ jobs:
         with:
           path: semana-09/datos/datos_2024.zip
           key: defunciones-2024-33682a2f   # la suma SHA-256 del zip, que el test comprueba
+      - name: Descargar los microdatos del INE, si no están en la caché
+        # Antes del test: si el servidor del INE falla, falla este paso, no la entrega
+        run: |
+          [ -f semana-09/datos/datos_2024.zip ] ||
+            curl -sSfL --retry 5 --retry-all-errors --retry-delay 10 -o semana-09/datos/datos_2024.zip \
+              https://www.ine.es/ftp/microdatos/mnp_defun/datos_2024.zip
       - run: julia --project=semana-12 -e 'using Pkg; Pkg.instantiate()'
       - run: julia --project=semana-12 --depwarn=yes semana-12/test_semana12.jl
       - uses: actions/upload-artifact@v4
