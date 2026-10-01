@@ -5,7 +5,8 @@ weight: 2
 ---
 
 **Módulo:** Cimientos formales y programación  
-**Texto de referencia:** Gilbert Strang, *Linear Algebra and Its Applications*, caps. 2-4 (los cuatro subespacios, ortogonalidad, Gram-Schmidt y determinantes); Lloyd N. Trefethen y David Bau, *Numerical Linear Algebra*, lecciones 7-10; Brian W. Kernighan y Rob Pike, *The Practice of Programming*, caps. 1-3  
+**Lecturas imprescindibles:** Gilbert Strang, *Linear Algebra and Its Applications*, caps. 2 y 3 (los cuatro subespacios, ortogonalidad y Gram-Schmidt; las proyecciones y los mínimos cuadrados son de la semana 3); Brian W. Kernighan y Rob Pike, *The Practice of Programming*, cap. 1 (el estilo)  
+**De ampliación:** Strang, cap. 4 (determinantes), del que esta semana basta lo que dice el punto 2 de la sección 1; Lloyd N. Trefethen y David Bau, *Numerical Linear Algebra*, lecciones 7-10, un texto de posgrado, cuyas lecciones 8 y 9 (Gram-Schmidt y su experimento numérico) son las más cercanas al ejercicio 2; Kernighan y Pike, caps. 2-3, que siguen en la semana 3  
 **Herramientas:** Julia 1.11 o posterior, con `LinearAlgebra` (biblioteca estándar); `sh`, `sed` y `awk`; `CairoMakie` y [`Somosaguas`](https://github.com/nuevasomosaguas/somosaguas-makie) para las figuras  
 **Evaluación:** entrega de un script ejecutable `.jl` y de un script de consola `.sh`, sujetos a integración continua, y prueba de la pizarra (*Blackboard Defence*)
 
@@ -46,9 +47,9 @@ En la semana 1, una matriz era una tabla de vectores: votantes o partidos. Esta 
 
    y $R$ es invertible precisamente porque $A$ tiene rango completo; si no lo tiene, algún $r_{jj}$ es cero y la normalización divide por cero. Como $|\det Q| = 1$, el determinante de una $A$ cuadrada sale de la diagonal de $R$: $|\det A| = \prod_j r_{jj}$.
 
-4. **Clásico frente a modificado.** Gram-Schmidt **clásico** (CGS) calcula $r_{ij} = \mathbf{q}_i^T \mathbf{a}_j$ con la columna original; el **modificado** (MGS), $r_{ij} = \mathbf{q}_i^T \mathbf{v}$ con lo que queda de ella tras restar las proyecciones anteriores. En aritmética exacta dan lo mismo. En punto flotante no: la pérdida de ortogonalidad, $\|Q^T Q - I\|$, crece como $\varepsilon\,\kappa(A)^2$ en el clásico y como $\varepsilon\,\kappa(A)$ en el modificado, donde $\varepsilon \approx 2 \cdot 10^{-16}$. MGS **reduce** la pérdida, no la evita; las reflexiones de Householder, que usa la `qr` de Julia, la mantienen en $\varepsilon$ para cualquier $\kappa(A)$.
+4. **Clásico frente a modificado.** Gram-Schmidt **clásico** (CGS) calcula $r_{ij} = \mathbf{q}_i^T \mathbf{a}_j$ con la columna original; el **modificado** (MGS), $r_{ij} = \mathbf{q}_i^T \mathbf{v}$ con lo que queda de ella tras restar las proyecciones anteriores. En aritmética exacta dan lo mismo. En punto flotante no: la pérdida de ortogonalidad, $\|Q^T Q - I\|$, crece como $\varepsilon\,\kappa(A)^2$ en el clásico y como $\varepsilon\,\kappa(A)$ en el modificado, donde $\varepsilon \approx 2 \cdot 10^{-16}$. MGS **reduce** la pérdida, no la evita; las reflexiones de Householder, que usa la `qr` de Julia, la mantienen en $\varepsilon$ para cualquier $\kappa(A)$. Las dos cotas valen solo mientras son menores que 1: cuando $\varepsilon\,\kappa(A)^2$ llega a 1, hacia $\kappa \approx 10^8$, CGS ya ha perdido la ortogonalidad por completo y $\|Q^T Q - I\|$ se estanca en el orden de la unidad.
 
-5. **La memoria por columnas.** Julia guarda las matrices por columnas (*column-major*): `A[i, j]` y `A[i + 1, j]` son vecinos en memoria, y `A[i, j]` y `A[i, j + 1]` están a $m$ posiciones. El procesador lee la memoria en líneas de 64 bytes, ocho `Float64`: recorrer una matriz por columnas aprovecha cada línea entera, y recorrerla por filas trae una línea por elemento. Gram-Schmidt trabaja con columnas enteras y por eso las recorre en memoria contigua.
+5. **La memoria por columnas.** Julia guarda las matrices por columnas (*column-major*): `A[i, j]` y `A[i + 1, j]` son vecinos en memoria, y `A[i, j]` y `A[i, j + 1]` están a $m$ posiciones. El procesador lee la memoria en líneas de caché, de 64 bytes (ocho `Float64`) en la mayoría de los procesadores x86 y de 128 en los Mac con procesador Apple: recorrer una matriz por columnas aprovecha cada línea entera, y recorrerla por filas trae una línea por elemento. El *prefetcher* del procesador, que adelanta las lecturas que prevé, suaviza la diferencia, y cuánto depende de la máquina. Gram-Schmidt trabaja con columnas enteras y por eso las recorre en memoria contigua.
 
 ## 2. La consola POSIX
 
@@ -62,7 +63,7 @@ POSIX es el estándar que comparten las consolas de Unix: un script que solo usa
 | `orden > archivo 2>&1` | Las dos salidas al mismo archivo: primero se redirige la 1, luego la 2 a donde apunte la 1 |
 | `orden1 \| orden2` | La salida de `orden1` es la entrada de `orden2` |
 
-`orden &> archivo` no es POSIX: es una extensión de `bash`. En `dash` se lee como `orden &` (ejecutar en segundo plano) seguido de `> archivo` (vaciar el archivo), y no redirige nada.
+`orden &> archivo` no es POSIX: es una extensión de `bash`. En `dash` se lee como `orden &` (ejecutar en segundo plano) seguido de `> archivo` (vaciar el archivo), y no redirige nada. La redirección la interpreta la consola en la que se escribe la orden, no la que ejecuta el script: `sh flujo.sh &> todo.txt`, escrito en `bash` o `zsh`, funciona, aunque el script lo ejecute `dash`.
 
 Tres herramientas bastan para transformar texto por columnas sin abrir un editor:
 
@@ -142,17 +143,17 @@ save(joinpath(resultados, "ortogonalidad.png"), fig; px_per_unit = 1.5)
 ### Ejercicio 2: Gram-Schmidt modificado
 
 - **Tarea:** escribe `mgs(A)`, que devuelve `Q, R` como `cgs` pero calcula cada $r_{ij}$ contra lo que queda de la columna, no contra la original. Añade su pérdida de ortogonalidad a la figura, y a la tabla como quinta columna, `mgs`, después de las que hay.
-- **Pregunta causal:** en la escala logarítmica de la figura, la pendiente de CGS es 2, la de MGS es 1 y la de Householder es 0. Explica las tres pendientes. ¿Por qué el cambio de una sola variable en el bucle cambia el exponente de $\kappa(A)$?
+- **Pregunta causal:** en la escala logarítmica de la figura, la pendiente de CGS es 2 hasta que se satura, la de MGS es 1 y la de Householder es 0. Explica las tres pendientes. ¿Por qué el cambio de una sola variable en el bucle cambia el exponente de $\kappa(A)$? ¿Por qué se aplana la curva de CGS a partir de $\kappa \approx 10^8$, y a partir de qué $\kappa$ se aplanaría la de MGS?
 
 ### Ejercicio 3: la memoria por columnas
 
 - **Tarea:** escribe dos funciones que sumen los elementos de una matriz de $5000 \times 5000$ con dos bucles anidados, una con el índice de fila en el bucle interior y otra con el de columna. Mide las dos con `@elapsed`, después de ejecutar cada una una vez para que Julia la compile.
-- **Pregunta causal:** ¿cuántas veces más lenta es la suma por filas? Explícalo con las líneas de 64 bytes del procesador. ¿Qué orden de bucles usa `cgs`?
+- **Pregunta causal:** ¿cuántas veces más lenta es la suma por filas? Explícalo con las líneas de caché de tu procesador (`getconf LEVEL1_DCACHE_LINESIZE` en Linux, `sysctl hw.cachelinesize` en macOS) y compara tu cociente con el de tus compañeros. ¿Qué orden de bucles usa `cgs`?
 
 ### Ejercicio 4: la tabla en la consola
 
 - **Tarea:** escribe `flujo.sh`, un script POSIX que lea `resultados/ortogonalidad.csv` y escriba en la salida estándar, una por línea, las $n$ en que Gram-Schmidt clásico pierde la ortogonalidad, $\|Q^TQ - I\| > 10^{-6}$. Usa `sed` para quitar la cabecera y `awk` para filtrar.
-- **En la terminal:** guarda la lista en `perdidas.txt` y los errores en `errores.log` con una sola orden; añade después la media de $\log_{10} \kappa$ al final de `perdidas.txt` con un acumulador de `awk`. Ejecuta `sh flujo.sh &> todo.txt` en `dash` y explica qué ha pasado.
+- **En la terminal:** guarda la lista en `perdidas.txt` y los errores en `errores.log` con una sola orden; añade después la media de $\log_{10} \kappa$ al final de `perdidas.txt` con un acumulador de `awk`, que no tiene `log10`: $\log_{10} x$ es `log(x) / log(10)`. Ejecuta `sh flujo.sh &> todo.txt` dentro de `dash`, con `dash -c 'sh flujo.sh &> todo.txt'`, y explica qué ha pasado; ejecútalo después en tu consola habitual y explica por qué ahí funciona.
 
 ## 5. Criterio de verificación por integración continua
 
