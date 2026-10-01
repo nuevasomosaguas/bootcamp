@@ -18,14 +18,18 @@ ancho_png(archivo) = ntoh(reinterpret(UInt32, read(archivo, 20)[17:20])[1])
     end
 
     @testset "deja el panel en alta resolución en resultados/" begin
-        pngs = isdir(resultados) ? filter(endswith(".png"), readdir(resultados; join = true)) : String[]
-        @test !isempty(pngs)
-        @test all(>=(2000) ∘ ancho_png, pngs)
+        panel = joinpath(resultados, "difusion_logistica.png")
+        @test isfile(panel) && ancho_png(panel) >= 2000
     end
 
     @testset "test_pico_inflexion" begin
-        (; N, dNdt, K) = entrega
-        @test 0.499K <= N[argmax(dNdt)] <= 0.501K
+        (; N, t, r, K, N0, dt, t_inflexion) = entrega
+        # N es la trayectoria de Euler, paso a paso, desde N0 en t = 0
+        euler = accumulate((n, _) -> n + r * n * (1 - n / K) * dt, 2:length(t); init = N0)
+        @test first(t) == 0 && t[2] - t[1] ≈ dt
+        @test N ≈ [N0; euler]
+        # Euler llega a la inflexión con 1-2 pasos de retraso: la tolerancia, en pasos
+        @test abs(t_inflexion - log((K - N0) / N0) / r) <= 3dt
     end
 
     @testset "resuelve el SIR con paso adaptativo" begin
