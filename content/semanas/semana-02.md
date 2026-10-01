@@ -125,12 +125,13 @@ save(joinpath(resultados, "ortogonalidad.png"), fig; px_per_unit = 1.5)
 
 ## 4. Ejercicios
 
-### Ejercicio 1: un cuestionario con un ítem redundante
+### Ejercicio 1: el censo de conductores de la DGT, casi sin rango completo
 
-Un cuestionario de cuatro ítems se aplica a 100 personas, y el cuarto es un índice: la suma de los dos primeros. Construye $A \in \mathbb{R}^{100 \times 4}$ con tres columnas aleatorias, `randn(100, 3)`, y la cuarta igual a la suma de las dos primeras.
+`semana-02/datos/censo_conductores_municipal202512.txt` es el [censo de conductores de la DGT](https://www.dgt.es/menusecundario/dgt-en-cifras/dgt-en-cifras-resultados/dgt-en-cifras-detalle/Microdatos-de-censo-de-conductores-segun-provincia-municipio-y-sexo-mensual/) a 31 de diciembre de 2025, tal como lo publica la Dirección General de Tráfico: una fila por municipio de residencia y sexo, con los campos separados por `|` y tres recuentos, los conductores con algún permiso en vigor (`NUM_PERMISO`), con alguna licencia (`NUM_LICENCIA`) y con algún permiso o licencia (`NUM_LICENCIA_PERMISO`). El archivo tiene finales de línea de Windows, `\r\n`.
 
-- **Tarea:** calcula el rango de $A$ y la dimensión de sus cuatro subespacios. Halla a mano una base de $\mathcal{N}(A)$, compruébala con `nullspace(A)` y verifica numéricamente que es ortogonal a cada fila de $A$. Calcula $\det(A^T A)$ y aplica `cgs` a $A$: ¿qué pasa con $r_{44}$ y con la cuarta columna de $Q$?
-- **Pregunta causal:** ¿por qué el índice no añade información al cuestionario? Explícalo con el vector de $\mathcal{N}(A)$ y con el volumen que mide el determinante.
+- **En la consola:** cuenta las filas que da `awk -F'|' '$6 == "919"'` sobre el archivo tal cual y después de `sed 's/\r$//'`, y explica la diferencia. Con `sed` y un acumulador de `awk`, escribe el total de conductores por provincia.
+- **En Julia:** forma $A \in \mathbb{R}^{16\,286 \times 3}$ con los tres recuentos y calcula su rango, sus valores singulares (`svdvals`) y $\kappa(A)$. Calcula $A\mathbf{v}$ para $\mathbf{v} = (1, 1, -1)$: ¿qué cuenta cada elemento? Si nadie tuviera a la vez permiso y licencia, ¿cuál sería $\mathcal{N}(A)$, y cuáles las dimensiones de los cuatro subespacios?
+- **Pregunta causal:** $A$ tiene rango 3, pero $\kappa(A) \approx 10^5$ y $\|A\mathbf{v}\| / \|A\| \approx 5 \cdot 10^{-5}$. ¿Qué dice ese vector casi nulo de los datos, y qué dice el segundo valor singular, también pequeño? ¿Por qué el determinante de $A^TA$, sin escala, no sirve para decidir si una matriz es «casi singular»?
 
 ### Ejercicio 2: Gram-Schmidt modificado
 

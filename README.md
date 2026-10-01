@@ -5,3 +5,5 @@ Las guías de trabajo, cuadernos de ejercicios y flujos de integración continua
 La web se construye con Hugo y el tema de la Nueva Somosaguas (copiado en `themes/somosaguas`): `hugo server` la muestra en <http://localhost:1313>, y cada push a `master` la publica en GitHub Pages. Cada semana es un archivo en `content/semanas/`, con la fecha de su lunes y `weight` igual a su número, que fija el orden de la portada.
 
 Cada `semana-NN/` lleva su `Project.toml` y su `test_semanaN.jl`, que corrige la entrega `laboratorio_semanaN.jl` de esa carpeta; `.github/workflows/semana-NN.yml` lo ejecuta con cada push que la toque.
+
+Los datos reales: `semana-02/datos/` guarda el censo de conductores por municipio y sexo de diciembre de 2025, de la [DGT](https://www.dgt.es/menusecundario/dgt-en-cifras/dgt-en-cifras-resultados/dgt-en-cifras-detalle/Microdatos-de-censo-de-conductores-segun-provincia-municipio-y-sexo-mensual/), tal como se publica. El proyecto de la semana 4 descarga la [Encuesta de Estructura Salarial 2022](https://www.ine.es/dyngs/INEbase/es/operacion.htm?c=Estadistica_C&cid=1254736177025&menu=resultados&idp=1254735976596) del INE, que no entra en el repositorio.

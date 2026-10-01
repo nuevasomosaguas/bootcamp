@@ -6,8 +6,8 @@ weight: 4
 
 **Módulo:** Cimientos formales y programación  
 **Texto de referencia:** Gilbert Strang, *Linear Algebra and Its Applications*, cap. 3 (ortogonalidad y mínimos cuadrados), que se lee con las semanas 2 y 3; John F. Monahan, *A Primer on Linear Models*; Bradley Efron y Trevor Hastie, *Computer Age Statistical Inference*, caps. 1-3  
-**Herramientas:** Julia 1.11 o posterior, con `LinearAlgebra`, `Random` y `Statistics` (biblioteca estándar), sin paquetes de regresión (`GLM`); `CairoMakie` y [`Somosaguas`](https://github.com/nuevasomosaguas/somosaguas-makie) para las figuras  
-**Evaluación:** entrega de un script ejecutable `.jl`, sujeto a integración continua, y prueba de la pizarra (*Blackboard Defence*)
+**Herramientas:** Julia 1.11 o posterior, con `LinearAlgebra`, `Random` y `Statistics` (biblioteca estándar), sin paquetes de regresión (`GLM`); `sh`, `curl`, `unzip` y `awk`; `git`; `CairoMakie` y [`Somosaguas`](https://github.com/nuevasomosaguas/somosaguas-makie) para las figuras  
+**Evaluación:** entrega de un script ejecutable `.jl` y del proyecto de cierre de la fase I (un script de consola, un script de Julia y su historial de Git), sujetos a integración continua, y prueba de la pizarra (*Blackboard Defence*)
 
 ## 1. Marco conceptual: la regresión como proyección ortogonal en $\mathbb{R}^n$
 
@@ -138,16 +138,55 @@ El apalancamiento de cada observación $i$ es el elemento diagonal $h_{ii}$ de l
 
   Identifica las observaciones que superan el umbral convencional $D_i > 4/n$ y dibuja la deformación que sufre el hiperplano de proyección al incluir o excluir ese punto.
 
-## 4. Criterio de verificación por integración continua
+## 4. Proyecto de cierre de la fase I: la ecuación de salarios con microdatos
 
-La entrega es `semana-04/laboratorio_semana4.jl` en el repositorio de la asignatura. Con cada push, la integración continua ejecuta `semana-04/test_semana4.jl`, y el laboratorio se supera si el script:
+El código base inventa los ingresos para conocer la verdad; el proyecto los toma de la **[Encuesta de Estructura Salarial 2022](https://www.ine.es/dyngs/INEbase/es/operacion.htm?c=Estadistica_C&cid=1254736177025&menu=resultados&idp=1254735976596)** del INE: 240 490 asalariados, uno por registro, en un archivo de texto de ancho fijo. Reúne las cuatro semanas de la fase: la consola de la semana 2 para limpiar los microdatos, el Gram-Schmidt modificado y la sustitución hacia atrás de las semanas 2 y 3 para estimar, y Git para entregar.
 
-1. No usa paquetes de regresión (`GLM`, `FixedEffectModels`, `MLJ`, ni una función `lm`): toda la estimación se deriva con productos matriciales y la resolución de sistemas lineales (`\`).
-2. Se ejecuta sin excepciones ni advertencias en Julia 1.11 o posterior, y deja el panel diagnóstico en PNG en `semana-04/resultados/`.
+**Los datos.** [`datos_2022.zip`](https://www.ine.es/ftp/microdatos/salarial/datos_2022.zip) (77 MB) trae los microdatos en `md_EES_2022.txt`, de ancho fijo y con finales de línea `\r\n`, y su diseño de registro en `dr_EES_2022.json` y `dr_EES_2022.xlsx`: la posición y la longitud de cada variable. Las que hacen falta:
+
+| Variable | Posición | Longitud | Contenido |
+| :--- | ---: | ---: | :--- |
+| `SEXO` | 18 | 1 | 1, hombre; 6, mujer |
+| `ESTU` | 23 | 1 | Estudios, de 1 (menos que primaria) a 7 (licenciatura o doctorado) |
+| `ANOANTI` | 24 | 2 | Años de antigüedad en la empresa |
+| `TIPOJOR` | 28 | 1 | Jornada: 1, completa; 2, parcial |
+| `DRELABAM` | 126 | 2 | Meses trabajados en el año |
+| `RETRINOIN` | 146 | 10 | Salario bruto anual no derivado de incapacidad temporal, en euros |
+| `RETRIIN` | 156 | 10 | Salario bruto anual derivado de incapacidad temporal, en euros |
+
+Los microdatos no entran en el repositorio: se descargan del INE, que permite reutilizarlos citando la fuente.
+
+**1. Limpieza en la consola (`semana-04/limpiar.sh`).** Un script POSIX que descarga el zip en `semana-04/datos/` si no está, con `curl`, y con `unzip -p` y `awk` escribe `semana-04/datos/ees2022.csv`, con la cabecera `mujer,estudios,antiguedad,salario` y una fila por cada asalariado a jornada completa (`TIPOJOR` = 1) que trabajó los doce meses (`DRELABAM` = 12) y cobró un salario anual positivo: `mujer` es 1 o 0, y `salario`, la suma de `RETRINOIN` y `RETRIIN` con dos decimales. Quedan 170 521 filas. Las rutas son relativas a `semana-04/`, desde donde se ejecuta.
+
+**2. Estimación en Julia (`semana-04/proyecto.jl`).** El script lee el CSV, forma la matriz de diseño en este orden:
+
+$$
+\mathbf{X} = \big[\, \mathbf{1}, \; \text{mujer}, \; \text{antigüedad}, \; \text{antigüedad}^2, \; \mathbb{I}[\text{estudios} = 2], \dots, \mathbb{I}[\text{estudios} = 7] \,\big] \in \mathbb{R}^{170\,521 \times 10}
+$$
+
+con $\mathbf{y} = \log(\text{salario})$, y estima $\boldsymbol{\hat\beta}$ con `minimos_cuadrados_mgs` de la semana 3, es decir, Gram-Schmidt modificado sobre $[\mathbf{X} \; \mathbf{y}]$ y sustitución hacia atrás. Guarda `X_ees`, `y_ees` y `β_ees` con esos nombres, y deja en `semana-04/resultados/` una figura con la prima salarial de cada nivel de estudios.
+
+**3. Entrega con Git.** El historial muestra el trabajo en commits pequeños, y `.gitignore` excluye `semana-04/datos/`: ni el zip ni el CSV se comprometen.
+
+**Preguntas para la pizarra:**
+
+- **La brecha:** con los mismos estudios y la misma antigüedad, ¿cuánto menos cobra una mujer, en porcentaje? Pasa el coeficiente de $\log(\text{salario})$ a porcentaje con $e^{\hat\beta} - 1$, y explica por qué el coeficiente no es una medida de discriminación: ¿qué variables que influyen en el salario faltan en $\mathbf{X}$, y cómo sesgan $\hat\beta_{\text{mujer}}$?
+- **El condicionamiento:** calcula $\kappa(\mathbf{X})$, en torno a $2 \cdot 10^4$, y vuelve a calcularlo con la antigüedad centrada en su media: baja a unos $7 \cdot 10^3$. ¿Qué par de columnas casi colineales explica esa bajada, qué explica el resto, y por qué centrar no cambia ni $\hat{\mathbf{y}}$ ni $R^2$?
+- **Los pesos:** cada registro lleva un factor de elevación, `FACTOTAL` (posición 195, longitud 12), que dice a cuántos asalariados representa. Estima la misma ecuación por mínimos cuadrados ponderados con esos pesos. ¿Contradice el resultado el teorema de Gauss-Markov?
+
+## 5. Criterio de verificación por integración continua
+
+La entrega es `semana-04/laboratorio_semana4.jl`, con el proyecto, `semana-04/limpiar.sh` y `semana-04/proyecto.jl`, en el repositorio de la asignatura. Con cada push, la integración continua ejecuta `semana-04/test_semana4.jl`, y la semana se supera si:
+
+1. Ningún script usa paquetes de regresión (`GLM`, `FixedEffectModels`, `MLJ`, ni una función `lm`): toda la estimación se deriva con productos matriciales y la resolución de sistemas lineales.
+2. `laboratorio_semana4.jl` se ejecuta sin excepciones ni advertencias en Julia 1.11 o posterior, y deja el panel diagnóstico en PNG en `semana-04/resultados/`.
 3. Supera el test unitario `test_ortogonalidad`, que comprueba que los residuos son los de la proyección de $\mathbf{y}$ sobre $\text{col}(\mathbf{X})$ y que $\|\mathbf{X}^T \mathbf{e}\|_\infty < 10^{-10}$.
-4. Supera el test unitario `test_descomposicion_varianza`, que comprueba que $SS_{\text{Reg}} + SS_{\text{Res}} = SS_{\text{Tot}}$ dentro de la tolerancia del punto flotante.
+4. Supera el test unitario `test_descomposicion_varianza`, que comprueba que $SS_{\text{Reg}} + SS_{\text{Res}} = SS_{\text{Tot}}$ dentro de la tolerancia del punto flotante. Estos tests leen `X`, `y`, `residuos`, `ss_tot`, `ss_reg` y `ss_res`: el script conserva esos nombres del código base.
+5. `sh limpiar.sh`, ejecutado en `dash`, deja `datos/ees2022.csv` con exactamente las filas que el test lee por su cuenta del ancho fijo, en el mismo orden, con el salario al céntimo.
+6. `proyecto.jl` se ejecuta sin advertencias, su `X_ees` es la matriz de diseño en el orden indicado, su `β_ees` coincide con `X_ees \ y_ees` y sale de su propia `minimos_cuadrados_mgs`, cuyo `mgs` es Gram-Schmidt modificado, y deja su figura.
+7. `semana-04/datos/` está excluida por `.gitignore` y sin archivos en el repositorio.
 
-Los tests leen `X`, `y`, `residuos`, `ss_tot`, `ss_reg` y `ss_res`: el script conserva esos nombres del código base. Antes de enviarlo, el mismo test se pasa en la terminal:
+Antes de enviarlo, el mismo test se pasa en la terminal, dentro del repositorio; la primera vez descarga los 77 MB de la encuesta:
 
 ```sh
 julia --project=semana-04 -e 'using Pkg; Pkg.instantiate()'
