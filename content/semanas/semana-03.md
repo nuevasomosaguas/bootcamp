@@ -9,6 +9,12 @@ weight: 3
 **Herramientas:** Julia 1.11 o posterior, con `LinearAlgebra` y `Random` (biblioteca estándar); `git` en la terminal; `CairoMakie` y [`Somosaguas`](https://github.com/nuevasomosaguas/somosaguas-makie) para las figuras  
 **Evaluación:** entrega de un script ejecutable `.jl` y de su historial de Git, sujetos a integración continua, y prueba de la pizarra (*Blackboard Defence*)
 
+
+> [!nota] Lo que esta semana da por sabido
+> - **De la [prueba de nivel](../../diagnostico/):** los problemas B2 (proyección sobre una recta), C4 ($X^TX$) y D2 (mínimos cuadrados con un solo número), y el Gram-Schmidt modificado de la semana 2.
+> - **Nuevo para todos:** la proyección sobre un subespacio, los mínimos cuadrados con $QR$, la sustitución hacia atrás, la memoria de un programa y Git.
+> - **Para repasar:** Strang, *18.06*, lecciones [15, proyecciones sobre subespacios](https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/resources/lecture-15-projections-onto-subspaces/) y [16, matrices de proyección y mínimos cuadrados](https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/resources/lecture-16-projection-matrices-and-least-squares/); los capítulos 2 y 3 de [*Pro Git*](https://git-scm.com/book/es/v2).
+
 ## 1. Marco conceptual: proyectar sin perder precisión ni memoria
 
 En la semana 2, Gram-Schmidt construyó una base ortonormal de $\mathcal{C}(A)$. Esta semana la usamos para el problema central de la estadística: hallar el punto de un subespacio más cercano a un vector de datos.

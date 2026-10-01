@@ -9,6 +9,12 @@ weight: 4
 **Herramientas:** Julia 1.11 o posterior, con `LinearAlgebra`, `Random` y `Statistics` (biblioteca estándar), sin paquetes de regresión (`GLM`); `sh`, `curl`, `unzip` y `awk`; `git`; `CairoMakie` y [`Somosaguas`](https://github.com/nuevasomosaguas/somosaguas-makie) para las figuras  
 **Evaluación:** entrega de un script ejecutable `.jl` y del proyecto de cierre de la fase I (un script de consola, un script de Julia y su historial de Git), sujetos a integración continua, y prueba de la pizarra (*Blackboard Defence*)
 
+
+> [!nota] Lo que esta semana da por sabido
+> - **De la [prueba de nivel](../../diagnostico/):** los problemas F1 (la recta de regresión del Bachillerato), D2 (la media minimiza la suma de cuadrados) y E3 (esperanza y varianza), y las semanas 2 y 3.
+> - **Nuevo para todos:** la regresión con varias variables en forma matricial, la esperanza y la varianza de un vector aleatorio, el teorema de Gauss-Markov y el trabajo con microdatos.
+> - **Para repasar:** Strang, *18.06*, lección [16, matrices de proyección y mínimos cuadrados](https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/resources/lecture-16-projection-matrices-and-least-squares/); el álgebra lineal y la probabilidad de Moore y Siegel, en los [consejos](../../consejos/).
+
 ## 1. Marco conceptual: la regresión como proyección ortogonal en $\mathbb{R}^n$
 
 En las facultades de sociología tradicional se enseña la regresión lineal como un algoritmo mecánico para «trazar una línea entre puntos». En la Nueva Somosaguas, la regresión por mínimos cuadrados ordinarios (MCO, en inglés OLS) se entiende desde su naturaleza geométrica: **es la proyección ortogonal del vector de observaciones $\mathbf{y} \in \mathbb{R}^n$ sobre el subespacio $\text{col}(\mathbf{X}) \subset \mathbb{R}^n$ generado por las columnas de la matriz de diseño $\mathbf{X}$**.

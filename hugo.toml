@@ -19,6 +19,10 @@ buildFuture = true
   name = "Consejos"
   pageRef = "/consejos"
   weight = 20
+[[menus.main]]
+  name = "Prueba de nivel"
+  pageRef = "/diagnostico"
+  weight = 30
 
 [markup.goldmark.renderer]
   unsafe = true

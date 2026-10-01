@@ -9,6 +9,12 @@ weight: 6
 **Herramientas:** Julia 1.11 o posterior, con `Random` y `Statistics` (biblioteca estándar); `CairoMakie` y [`Somosaguas`](https://github.com/nuevasomosaguas/somosaguas-makie) para las figuras  
 **Evaluación:** entrega de un script ejecutable `.jl`, sujeto a integración continua, y prueba de la pizarra (*Blackboard Defence*)
 
+
+> [!nota] Lo que esta semana da por sabido
+> - **De la [prueba de nivel](../../diagnostico/):** el bloque E (Bayes, binomial, esperanza y normal) y el problema D3 (la integral como área: una densidad suma 1).
+> - **Nuevo para todos:** el teorema de Bayes con densidades, la distribución beta, las *priors* conjugadas y la simulación Monte Carlo.
+> - **Para repasar:** 3Blue1Brown, [el teorema de Bayes](https://www.3blue1brown.com/lessons/bayes-theorem); Blitzstein y Hwang, capítulos 2 a 5, y el 8 para la distribución beta, en los [consejos](../../consejos/).
+
 ## 1. Marco conceptual: la probabilidad como extensión de la lógica en condiciones de incertidumbre
 
 La estadística frecuentista tradicional impone una ficción paralizante: trata los parámetros sociales desconocidos (la tasa real de apoyo a una medida, la heredabilidad de un rasgo o la efectividad de una política) como «constantes fijas desconocidas», y define la probabilidad como el límite de las frecuencias relativas en repeticiones infinitas de un experimento que jamás ocurrirá.

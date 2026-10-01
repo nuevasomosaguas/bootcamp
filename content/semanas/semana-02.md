@@ -9,6 +9,12 @@ weight: 2
 **Herramientas:** Julia 1.11 o posterior, con `LinearAlgebra` (biblioteca estándar); `sh`, `sed` y `awk`; `CairoMakie` y [`Somosaguas`](https://github.com/nuevasomosaguas/somosaguas-makie) para las figuras  
 **Evaluación:** entrega de un script ejecutable `.jl` y de un script de consola `.sh`, sujetos a integración continua, y prueba de la pizarra (*Blackboard Defence*)
 
+
+> [!nota] Lo que esta semana da por sabido
+> - **De la [prueba de nivel](../../diagnostico/):** el bloque C (sistemas por Gauss y determinantes) y la semana 1. Quien cursó Ciencias Sociales no vio determinantes.
+> - **Nuevo para todos:** los subespacios, la independencia lineal, la base, la dimensión, el rango y el espacio nulo; Gram-Schmidt y la factorización $QR$; el número de condición y el error de redondeo; la consola POSIX.
+> - **Para repasar:** Strang, *18.06*, lecciones [9, independencia, base y dimensión](https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/resources/lecture-9-independence-basis-and-dimension/), [10, los cuatro subespacios](https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/resources/lecture-10-the-four-fundamental-subspaces/) y [17, Gram-Schmidt](https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/resources/lecture-17-orthogonal-matrices-and-gram-schmidt/); 3Blue1Brown, [combinaciones lineales](https://www.3blue1brown.com/lessons/span) y [transformaciones lineales](https://www.3blue1brown.com/lessons/linear-transformations); las dos primeras lecciones de [*The Missing Semester*](https://missing.csail.mit.edu/2026/).
+
 ## 1. Marco conceptual: la geometría de una matriz
 
 En la semana 1, una matriz era una tabla de vectores: votantes o partidos. Esta semana es un operador, $A \in \mathbb{R}^{m \times n}$, que lleva $\mathbb{R}^n$ a $\mathbb{R}^m$, y su geometría entera se lee en cuatro subespacios.

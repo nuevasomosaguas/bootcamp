@@ -9,6 +9,12 @@ weight: 5
 **Herramientas:** Julia 1.11 o posterior, con `OrdinaryDiffEqTsit5` para el integrador de paso adaptativo; `CairoMakie` y [`Somosaguas`](https://github.com/nuevasomosaguas/somosaguas-makie) para las figuras  
 **Evaluación:** entrega de un script ejecutable `.jl`, sujeto a integración continua, y prueba de la pizarra (*Blackboard Defence*)
 
+
+> [!nota] Lo que esta semana da por sabido
+> - **De la [prueba de nivel](../../diagnostico/):** los problemas A4 (exponencial y logaritmo) y D1 y D4 (derivadas, y la logística como ecuación entre una función y su derivada).
+> - **Nuevo para todos:** las ecuaciones diferenciales, sus puntos fijos y su estabilidad, el método de Euler y los sistemas acoplados como el SIR.
+> - **Para repasar:** 3Blue1Brown, [la derivada](https://www.3blue1brown.com/lessons/derivatives) y la serie sobre [ecuaciones diferenciales](https://www.3blue1brown.com/topics/differential-equations); el [libro de cálculo de Strang](https://ocw.mit.edu/courses/res-18-001-calculus-fall-2023/), en abierto en el MIT OpenCourseWare.
+
 ## 1. Marco conceptual: la derivada como motor de la dinámica social
 
 Si en la fase I representamos la estructura estática de la población con vectores de características en $\mathbb{R}^d$, en la semana 5 abordamos la **evolución temporal de los estados sociales**. La sociología tradicional comete el error de comparar fotos fijas en el tiempo (estática comparativa); la ciencia social analítica estudia las **tasas instantáneas de cambio** mediante **ecuaciones diferenciales ordinarias** (EDO).
