@@ -1,0 +1,22 @@
+# Comprueba cada lunes los enlaces de la web, sin bloquear la publicación: los cursos de la UNED
+# cambian de dirección con cada edición, y un enlace roto se descubre aquí y no por un estudiante.
+name: Comprobar los enlaces
+on:
+  schedule:
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
+jobs:
+  enlaces:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          curl -fsSLo /tmp/hugo.deb "https://github.com/gohugoio/hugo/releases/download/v0.165.0/hugo_extended_0.165.0_linux-amd64.deb"
+          sudo dpkg -i /tmp/hugo.deb
+          hugo --baseURL "/"
+      - uses: lycheeverse/lychee-action@v2
+        with:
+          args: >-
+            --no-progress --root-dir ${{ github.workspace }}/public
+            --max-retries 2 --timeout 30 --accept-timeouts
+            'public/**/*.html'
