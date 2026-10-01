@@ -38,7 +38,7 @@ En la pizarra no hay pantalla: se deriva de viva voz lo que el script ejecutó. 
 | 7 | El paso de Newton como unos mínimos cuadrados ponderados, por qué converge de forma cuadrática y la máxima entropía, $p_k \propto e^{\lambda v_k}$, con Lagrange |
 | 8 | El coste $O(nm)$ de los bucles anidados frente al $O(n + m)$ de la tabla hash, y la esperanza de los pares en colisión con variables indicadoras |
 | 9 | $q_x = m_x / (1 + (1 - a_x)\, m_x)$ y la exposición del diagrama de Lexis, y por qué las contribuciones de Arriaga suman exactamente la diferencia de $e_0$ |
-| 10 | La ecuación de Euler-Lotka a partir de la de renovación, por qué tiene una sola raíz real y el factor $1 - c$ de Bongaarts y Feeney |
+| 10 | La ecuación de Euler-Lotka a partir de la de renovación, por qué tiene una sola raíz real, la aproximación de Coale y el factor $1 - c$ de Bongaarts y Feeney |
 | 11 | Los autovalores y autovectores de una matriz de Leslie de $3 \times 3$, a mano, y la sensibilidad $\partial\lambda/\partial a_{ij} = v_i w_j / \mathbf{v}^T\mathbf{w}$ |
 | 12 | Los autovectores de la matriz de Leslie de tu comunidad y su ecuación característica, que es la de Euler-Lotka, frente a las objeciones del tribunal |
 
