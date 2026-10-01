@@ -35,6 +35,12 @@ En la pizarra no hay pantalla: se deriva de viva voz lo que el script ejecutó. 
 | 4 | La varianza de $\boldsymbol{\hat\beta}$ y el teorema de Gauss-Markov; qué mide, y qué no, el coeficiente de la brecha salarial |
 | 5 | El punto de inflexión de la logística en $K/2$ y el umbral $R_0 > 1$ del SIR |
 | 6 | La actualización beta-binomial y la decisión que minimiza la pérdida esperada |
+| 7 | El paso de Newton como unos mínimos cuadrados ponderados, por qué converge de forma cuadrática y la máxima entropía, $p_k \propto e^{\lambda v_k}$, con Lagrange |
+| 8 | El coste $O(nm)$ de los bucles anidados frente al $O(n + m)$ de la tabla hash, y la esperanza de los pares en colisión con variables indicadoras |
+| 9 | $q_x = m_x / (1 + (1 - a_x)\, m_x)$ y la exposición del diagrama de Lexis, y por qué las contribuciones de Arriaga suman exactamente la diferencia de $e_0$ |
+| 10 | La ecuación de Euler-Lotka a partir de la de renovación, por qué tiene una sola raíz real y el factor $1 - c$ de Bongaarts y Feeney |
+| 11 | Los autovalores y autovectores de una matriz de Leslie de $3 \times 3$, a mano, y la sensibilidad $\partial\lambda/\partial a_{ij} = v_i w_j / \mathbf{v}^T\mathbf{w}$ |
+| 12 | Los autovectores de la matriz de Leslie de tu comunidad y su ecuación característica, que es la de Euler-Lotka, frente a las objeciones del tribunal |
 
 Para cada test que pasa tu script, debes saber decir qué comprueba y por qué fallaría una versión equivocada. Y para cada supuesto del modelo, qué pasa si no se cumple: es la objeción que hará el tribunal.
 
