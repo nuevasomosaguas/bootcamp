@@ -1,4 +1,4 @@
 # Las plantillas usan el sistema de plantillas de Hugo 0.146 (home.html, page.html,
-# _partials/, _markup/) y transform.ToMath para las fórmulas.
+# _partials/, _markup/).
 [module.hugoVersion]
   min = "0.146.0"

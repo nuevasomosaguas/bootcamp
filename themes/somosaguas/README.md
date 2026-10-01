@@ -22,7 +22,7 @@ locale = "es-ES"
   name = "Archivo"
   pageRef = "/archivo"                   # una página con «layout: archivo»
 
-# Las fórmulas, $…$ y $$…$$, salen en MathML al construir, sin JavaScript.
+# Las fórmulas, $…$ y $$…$$, las pinta MathJax, que solo se carga en las páginas con fórmulas.
 [markup.goldmark.renderer]
   unsafe = true
 [markup.goldmark.extensions.passthrough]
@@ -38,6 +38,6 @@ locale = "es-ES"
 | `list.html` | Una sección o una etiqueta, en la misma lista |
 | `archivo.html` | Todo lo publicado, por años (`layout: archivo`) |
 | `page.html` | Una página, con su fecha y sus etiquetas si es de `mainSections` |
-| `_markup/` | Las fórmulas en MathML y los avisos de Obsidian (`> [!nota] Título`) como recuadros |
+| `_markup/` | Las fórmulas para MathJax y los avisos de Obsidian (`> [!nota] Título`) como recuadros |
 
 Hace falta Hugo 0.146 o posterior. Las tipografías EB Garamond y Fira Code (licencia OFL) vienen en `static/fuentes/`.
