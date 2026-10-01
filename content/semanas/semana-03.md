@@ -5,7 +5,8 @@ weight: 3
 ---
 
 **Módulo:** Cimientos formales y programación  
-**Texto de referencia:** Gilbert Strang, *Linear Algebra and Its Applications*, cap. 3 (proyecciones y mínimos cuadrados); Lloyd N. Trefethen y David Bau, *Numerical Linear Algebra*, lecciones 11-19; Brian W. Kernighan y Rob Pike, *The Practice of Programming*, caps. 1-3; Scott Chacon y Ben Straub, *Pro Git*, caps. 2-3  
+**Lecturas imprescindibles:** Gilbert Strang, *Linear Algebra and Its Applications*, cap. 3 (proyecciones y mínimos cuadrados); Scott Chacon y Ben Straub, *Pro Git*, caps. 2-3 (lo básico y las ramas, para el ejercicio 4)  
+**De ampliación:** Lloyd N. Trefethen y David Bau, *Numerical Linear Algebra*, lecciones 11-19, un texto de posgrado, cuyas lecciones 11 (mínimos cuadrados), 18 (su condicionamiento, también con residuo) y 19 (la estabilidad de cada algoritmo, con el truco de Björck) son las más cercanas a esta semana; Brian W. Kernighan y Rob Pike, *The Practice of Programming*, caps. 2-3, que siguen al cap. 1 de la semana 2 (el 2 vuelve en la semana 8)  
 **Herramientas:** Julia 1.11 o posterior, con `LinearAlgebra` y `Random` (biblioteca estándar); `git` en la terminal; `CairoMakie` y [`Somosaguas`](https://github.com/nuevasomosaguas/somosaguas-makie) para las figuras  
 **Evaluación:** entrega de un script ejecutable `.jl` y de su historial de Git, sujetos a integración continua, y prueba de la pizarra (*Blackboard Defence*)
 
@@ -39,6 +40,8 @@ En la semana 2, Gram-Schmidt construyó una base ortonormal de $\mathcal{C}(A)$.
    x_i = \frac{1}{r_{ii}} \Big( c_i - \sum_{j > i} r_{ij} x_j \Big), \qquad i = n, n-1, \dots, 1, \qquad \mathbf{c} = Q^T\mathbf{b}
    $$
 
+   Esa historia, $\kappa$ frente a $\kappa^2$, es la del residuo nulo. Si $\mathbf{b}$ no está en $\mathcal{C}(A)$, el propio problema tiene un número de condición con un término en $\kappa^2$, $\kappa + \kappa^2 \tan\theta / \eta$, donde $\theta$ es el ángulo entre $\mathbf{b}$ y $\mathcal{C}(A)$ y $\eta = \|A\|\,\|\mathbf{x}\| / \|A\mathbf{x}\|$ (Trefethen y Bau, lección 18): ningún algoritmo garantiza más precisión que la que el problema admite. Por eso el código base usa datos sin ruido.
+
 3. **La trampa de Gram-Schmidt.** Si $Q$ sale de Gram-Schmidt modificado, $Q^T\mathbf{b}$ hereda su pérdida de ortogonalidad, $\varepsilon\,\kappa(A)$, y la solución vuelve a equivocarse como la ecuación normal. El remedio, de Björck, es aplicar MGS a la matriz ampliada $[A \; \mathbf{b}]$: la última columna de su $R$ es $Q^T\mathbf{b}$ calculado con la misma aritmética que $R$, y su último elemento es $\|A\mathbf{x} - \mathbf{b}\|$.
 
    $$
@@ -53,13 +56,17 @@ Git guarda la historia de un repositorio como una cadena de *commits*, cada uno 
 
 | Orden | Qué hace |
 | :--- | :--- |
-| `git config --global user.name "Nombre Apellido"` y `user.email` | La identidad que firma cada commit |
+| `git config --global user.name "Nombre Apellido"` y `user.email` | La identidad que firma cada commit (el correo, mejor el privado de GitHub: ver abajo) |
 | `git status`, `git diff` | Qué ha cambiado desde el último commit |
 | `git add -p` | Elegir, trozo a trozo, qué cambios entran en el próximo commit |
 | `git commit -m "Mensaje"` | Guardar esos cambios: un commit, una idea |
 | `git switch -c rama` | Crear una rama y pasar a ella (antes, `git checkout -b`) |
 | `git merge rama` | Fusionar `rama` con la actual |
 | `git log --graph --oneline` | La historia, con sus ramas y fusiones |
+
+El correo de `user.email` queda público en cada commit que se sube a GitHub. GitHub da uno privado, de la forma `ID+usuario@users.noreply.github.com`, en *Settings → Emails*, con *Keep my email addresses private* marcado: es el que conviene configurar.
+
+Si la rama actual no ha avanzado desde que se creó `rama`, `git merge rama` no crea ningún commit: hace un **avance rápido** (*fast-forward*), mueve la rama actual hasta el último commit de `rama` y la historia queda en línea recta. `git merge --no-ff rama` crea siempre el commit de fusión, con dos padres (*Pro Git*, 3.2).
 
 `.gitignore` lista lo que Git no debe guardar: los resultados que el script rehace, los datos pesados, los binarios temporales. El del repositorio de la asignatura ya excluye `semana-*/resultados/`.
 
@@ -126,7 +133,7 @@ save(joinpath(resultados, "minimos_cuadrados.png"), fig; px_per_unit = 1.5)
 
 `F.Q` es la $Q$ completa, de $m \times m$, guardada de forma implícita: `F.Q' * b` tiene $m$ elementos, y $R\mathbf{x} = Q^T\mathbf{b}$ usa los $n$ primeros. Con la $Q$ de $m \times n$ que devuelve Gram-Schmidt, `Q' * b` ya tiene $n$.
 
-La ecuación normal es el método que menos memoria reserva en el código base, unos 7,5 kB frente a los 47-82 kB de las dos factorizaciones $QR$, que copian $A$ entera: $A^TA$ es de $10 \times 10$. Es el más barato y el que más se equivoca.
+La ecuación normal es el método que menos memoria reserva en el código base: con la Julia 1.13 de la imagen, unos 7,5 kB frente a los 47-82 kB de las dos factorizaciones $QR$ (las cifras cambian algo de una versión a otra), que copian $A$ entera: $A^TA$ es de $10 \times 10$. Es el más barato y el que más se equivoca.
 
 ## 4. Ejercicios
 
@@ -134,6 +141,7 @@ La ecuación normal es el método que menos memoria reserva en el código base, 
 
 - **Tarea:** escribe `sustitucion_atras!(x, R, c)`, que resuelve $R\mathbf{x} = \mathbf{c}$ para $R$ triangular superior, escribe la solución en `x` y la devuelve, sin reservar memoria: `@allocated` de la segunda llamada debe dar 0. Compárala con `R \ c`.
 - **Pregunta causal:** cuenta las multiplicaciones que hace en función de $n$. ¿Por qué la versión que escribe `dot(R[i, i+1:end], x[i+1:end])` reserva memoria en cada fila, y cómo lo evita `@views`?
+- **Por columnas:** la fórmula de la sección 1 recorre $R$ por filas, el orden que la semana 2 enseñó a evitar. Escribe también la versión por columnas: copia $\mathbf{c}$ en $\mathbf{x}$ y, de la última columna a la primera, despeja $x_j$ y resta $x_j$ veces la columna $j$ de $R$ a las incógnitas anteriores. Mide las dos con $n = 500$ y con $n = 5000$. ¿Cuándo gana la versión por columnas, y por qué no se nota con la matriz pequeña?
 
 ### Ejercicio 2: mínimos cuadrados con tu propio Gram-Schmidt
 
@@ -145,12 +153,13 @@ La ecuación normal es el método que menos memoria reserva en el código base, 
 Añade ruido a los datos, `y = b .+ 0.1 .* randn(m)`, para que $\mathbf{y}$ no esté en $\mathcal{C}(A)$.
 
 - **Tarea:** con la $Q$ de `mgs(vandermonde(3))`, forma $P = QQ^T$ y comprueba que es simétrica, que $\|P^2 - P\|$ es del orden de $\varepsilon$ y que su traza es 4, la dimensión de $\mathcal{C}(A)$. Comprueba que el residuo $\mathbf{y} - P\mathbf{y}$ está en $\mathcal{N}(A^T)$. Mide con `@allocated` cuánta memoria reservan `P * y` (con $P$ ya formada) y `Q * (Q' * y)`, y `A[:, 1:k] \ y` frente a `@views A[:, 1:k] \ y` para los submodelos de grado $k - 1$.
-- **Pregunta causal:** ¿cuántos bytes ocupa $P$ con $m = 500$? ¿Y con los $m = 4 \cdot 10^7$ registros de un censo?
+- **Pregunta causal:** ¿cuántos bytes ocupa $P$ con $m = 500$? ¿Y con los $m = 4 \cdot 10^7$ registros de un censo? ¿Cuánto ahorra `@views`? Compáralo con lo que ocupa el recorte, $8mk$ bytes, y explica qué sigue reservando `\`.
+- **Con ruido:** repite la figura con $\mathbf{y}$, midiendo el error frente a la solución exacta calculada con 256 bits, `Float64.(qr(big.(A)) \ big.(y))`, porque `x_real` ya no lo es. Compara el error de QR con $\kappa\varepsilon$ y con la cota de la sección 1, $(\kappa + \kappa^2 \tan\theta / \eta)\,\varepsilon$. ¿A cuál de las dos se parece, y qué dice eso de lo que promete una cota?
 
 ### Ejercicio 4: el historial en Git
 
-- **Tarea:** en tu repositorio de la asignatura, con tu identidad configurada, haz el ejercicio 2 en una rama, `git switch -c mgs`, con commits pequeños preparados con `git add -p`, y fusiónala con `master`. Provoca un conflicto cambiando la misma línea en las dos ramas y resuélvelo en la terminal. Comprueba con `git status` que `semana-03/resultados/` no entra en el repositorio.
-- **En la pizarra:** dibuja el grafo de `git log --graph --oneline` y explica qué commit tiene dos padres.
+- **Tarea:** en tu repositorio de la asignatura, con tu identidad configurada, haz el ejercicio 2 en una rama, `git switch -c mgs`, con commits pequeños preparados con `git add -p`, y fusiónala con `master` con `git merge --no-ff mgs`. Provoca un conflicto cambiando la misma línea en las dos ramas y resuélvelo en la terminal. Comprueba con `git status` que `semana-03/resultados/` no entra en el repositorio.
+- **En la pizarra:** dibuja el grafo de `git log --graph --oneline` y explica qué commit tiene dos padres. ¿Qué habría pasado con un `git merge mgs` sin `--no-ff`?
 
 ## 5. Criterio de verificación por integración continua
 
