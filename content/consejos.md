@@ -13,7 +13,7 @@ Lo que sirve para las doce semanas, sea cual sea la guía: cómo trabajar, cómo
 
 ## Cómo trabajar
 
-1. **Lee matemáticas con lápiz.** Gintis lo resume así: leer matemáticas no es como leer prosa; o se entiende cada expresión por completo o no se entiende. Una página de marco conceptual por hora es un buen ritmo. Rehaz cada derivación en papel antes de abrir el código.
+1. **Lee matemáticas con lápiz.** Gintis lo resume así: leer matemáticas no es como leer prosa; o se entiende cada expresión por completo o no se entiende. Si una no se entiende, se lee símbolo a símbolo hasta dar con el que falla, y no se sigue hasta saber qué significa. Una página de marco conceptual por hora es un buen ritmo. Rehaz cada derivación en papel antes de abrir el código.
 2. **Primero a mano, después en Julia, después el test.** Es el orden de cada guía. Una función cuyo resultado no sabes predecir a mano no está entendida, aunque pase el test.
 3. **Comprueba cada número.** Las guías dan valores concretos: un pico en $0.499\,K$, un error de $3 \cdot 10^{-5}$, una prima salarial de $0.81$. Reprodúcelos. Si no coinciden, el error está en tu código o en la guía, y las dos cosas merecen saberse.
 4. **Pasa el test en tu máquina antes de cada push.** El test de la integración continua es el mismo que el de la terminal: si falla en local, fallará en GitHub.
@@ -43,7 +43,7 @@ Además de los textos de referencia de cada semana.
 
 ### Leer y escribir matemáticas
 
-- **Herbert Gintis, *Mathematics for Humanists*.** Un libro para quien llega a las matemáticas desde las humanidades: las trata como un lenguaje que permite decir con precisión lo que la prosa no puede. Recorre la lectura de textos matemáticos, la lógica, los conjuntos, los números, la probabilidad, el cálculo, los espacios vectoriales y el análisis real. Es un borrador de 2021 que su autor dejó en abierto: [en la web de la UMass](https://www.umass.edu/preferen/gintis/mathlit.pdf) y, si el enlace falla, [en el Internet Archive](http://web.archive.org/web/20241116135949/http://www.umass.edu/preferen/gintis/mathlit.pdf). Los capítulos 1 a 3 antes de la semana 1; el 8, con las semanas 1 a 4; el 6 y el 7, con las semanas 5 y 6.
+- **Herbert Gintis, *Mathematics for Humanists*.** Un libro para quien llega a las matemáticas desde las humanidades: las trata como un lenguaje que permite decir con precisión lo que la prosa no puede. Recorre la lectura de textos matemáticos, la lógica, los conjuntos, los números, la probabilidad, el cálculo, los espacios vectoriales y el análisis real. Es un borrador de 2021, en abierto, que quedó sin terminar al morir Gintis en 2023: [en la web de la UMass](https://www.umass.edu/preferen/gintis/mathlit.pdf) y, si el enlace falla, [en el Internet Archive](http://web.archive.org/web/20241116135949/http://www.umass.edu/preferen/gintis/mathlit.pdf). Los capítulos 1 a 3 antes de la semana 1; el 8, con las semanas 1 a 4; el 6 y el 7, con las semanas 5 y 6.
 - **Richard Hammack, [*Book of Proof*](https://richardhammack.github.io/BookOfProof/).** Cómo se escribe una demostración, con ejercicios resueltos. Libre y gratuito.
 - **Daniel J. Velleman, *How to Prove It: A Structured Approach*** (Cambridge University Press). La estructura lógica de las demostraciones, paso a paso.
 - **George Pólya, *How to Solve It*** (Princeton University Press). El método para atacar un problema que no se sabe resolver: entenderlo, buscar uno parecido, plantear un plan y revisarlo.
