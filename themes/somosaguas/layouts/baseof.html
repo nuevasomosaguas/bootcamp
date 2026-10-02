@@ -7,8 +7,12 @@
   <meta name="description" content="{{ with .Description }}{{ . }}{{ else }}{{ with .Summary }}{{ . | plainify | truncate 160 }}{{ else }}{{ site.Params.descripcion }}{{ end }}{{ end }}">
   <link rel="icon" href="{{ "marca.svg" | relURL }}" type="image/svg+xml">
   {{ with resources.Get "somosaguas.css" | minify | fingerprint }}<link rel="stylesheet" href="{{ .RelPermalink }}" integrity="{{ .Data.Integrity }}">{{ end }}
-  {{/* .WordCount pinta el contenido antes, para saber si tiene fórmulas. */}}
-  {{ $_ := .WordCount }}{{ if .Store.Get "formulas" }}<script defer src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"></script>{{ end }}
+  {{/* .WordCount pinta el contenido antes, para saber si tiene fórmulas. MathJax 4 genera de
+       serie la voz, el braille y una copia enriquecida de cada fórmula: unos 190 MB con las
+       doscientas de la prueba de nivel. Se queda la copia en MathML que leen los lectores
+       de pantalla, y la voz y el braille se activan desde su menú (clic derecho). */}}
+  {{ $_ := .WordCount }}{{ if .Store.Get "formulas" }}<script>window.MathJax = { options: { menuOptions: { settings: { enrich: false, speech: false, braille: false, assistiveMml: true } } } };</script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"></script>{{ end }}
   {{ with .OutputFormats.Get "rss" }}<link rel="alternate" type="application/rss+xml" href="{{ .RelPermalink }}" title="{{ site.Title }}">{{ end }}
 </head>
 <body>
